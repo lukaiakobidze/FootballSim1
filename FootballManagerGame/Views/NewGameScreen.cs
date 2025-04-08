@@ -22,13 +22,13 @@ public class NewGameScreen : Screen
         _gameState = gameState;
         _font = font;
 
-        
-        _availableTeams = DataGenerator.GenerateLeague("Sample League", 10);
+        _gameState.AllTeams = DataGenerator.GenerateLeague("League 1", 20);
+        _availableTeams = _gameState.AllTeams;
     }
 
     public override void Update(GameTime gameTime)
     {
-        
+
     }
 
     public override void Draw(SpriteBatch spriteBatch)
@@ -36,14 +36,14 @@ public class NewGameScreen : Screen
         spriteBatch.Begin();
         spriteBatch.DrawString(_font, "Select Your Team", new Vector2(100, 50), Color.White);
 
-        
+
         for (int i = 0; i < _availableTeams.Count; i++)
         {
             Color color = (i == _selectedTeamIndex) ? Color.Yellow : Color.White;
             spriteBatch.DrawString(_font, _availableTeams[i].Name, new Vector2(100, 100 + i * 30), color);
         }
 
-        spriteBatch.DrawString(_font, "Press Enter to select team", new Vector2(100, 450), Color.White);
+        spriteBatch.DrawString(_font, "Press Enter to select team", new Vector2(100, 100 + (_availableTeams.Count * 30)), Color.White);
         spriteBatch.End();
     }
 
@@ -62,7 +62,7 @@ public class NewGameScreen : Screen
         if (inputState.IsKeyPressed(Keys.Enter))
         {
             _gameState.PlayerTeam = _availableTeams[_selectedTeamIndex];
-            _gameState.AllTeams = _availableTeams;
+            ScreenManager.Instance.AddScreen("TeamView", new TeamViewScreen(_gameState, _font));
             ScreenManager.Instance.ChangeScreen("TeamView");
         }
 
