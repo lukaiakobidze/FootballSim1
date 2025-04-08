@@ -10,4 +10,5 @@ public abstract class Screen
     public abstract void Update(GameTime gameTime);
     public abstract void Draw(SpriteBatch spriteBatch);
     public abstract void HandleInput(InputState inputState);
+    
 }

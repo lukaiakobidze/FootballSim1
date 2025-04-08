@@ -23,6 +23,9 @@ public class Game1 : Game
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
         _inputState = new InputState();
+        _graphics.PreferredBackBufferWidth = 1920;
+        _graphics.PreferredBackBufferHeight = 1080;
+        _graphics.IsFullScreen = true;        
     }
 
 
@@ -31,8 +34,7 @@ public class Game1 : Game
 
         _gameState = new GameState
         {
-            CurrentDate = new DateTime(2023, 7, 1), // Starting date for your game
-            PlayerTeam = new Models.Team { Name = "PSG" }
+            CurrentDate = new DateTime(2024, 8, 1)
         };
 
         base.Initialize();
@@ -43,9 +45,10 @@ public class Game1 : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         _font = Content.Load<SpriteFont>("GameFont");
 
-        ScreenManager.Instance.AddScreen("MainMenu", new MainMenuScreen(_gameState, _font));
-        ScreenManager.Instance.AddScreen("TeamView", new TeamViewScreen(_gameState, _font));
-        ScreenManager.Instance.AddScreen("NewGame", new NewGameScreen(_gameState, _font));
+        ScreenManager.Instance.AddScreen("MainMenu", new MainMenuScreen(_font));
+        //ScreenManager.Instance.AddScreen("TeamView", new TeamViewScreen(_gameState, _font));
+        //ScreenManager.Instance.AddScreen("NewGame", new NewGameScreen(_gameState, _font));
+        //ScreenManager.Instance.AddScreen("PlayerView", new PlayerViewScreen(_gameState, _font));
         ScreenManager.Instance.ChangeScreen("MainMenu");
     }
 

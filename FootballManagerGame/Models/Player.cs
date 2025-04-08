@@ -7,7 +7,7 @@ namespace FootballManagerGame.Models;
 public class Player
 {
     public string Name { get; set; }
-    //public DateTime Birthday { get; set; }
+    
     public int Age { get; set; }
     public Dictionary<Attributes, int> Attributes { get; set; } = new Dictionary<Attributes, int>();
     public List<PlayerPositions> Positions { get; set; } = new List<PlayerPositions>();

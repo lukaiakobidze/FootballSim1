@@ -7,8 +7,9 @@ namespace FootballManagerGame;
 public class GameState
 {
     public Team PlayerTeam { get; set; }
-    public List<Team> AllTeams { get; set; } = new List<Team>();
+    public List<Team> AllTeams { get; set; }
     public DateTime CurrentDate { get; set; }
+    public Player PlayerSelected { get; set; }
 
 
 }

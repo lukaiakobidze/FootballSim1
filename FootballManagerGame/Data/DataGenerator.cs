@@ -21,7 +21,7 @@ public class DataGenerator
             Players = new List<Player>()
         };
 
-        
+
         int playerCount = _random.Next(20, 26);
         for (int i = 0; i < playerCount; i++)
         {
@@ -33,11 +33,16 @@ public class DataGenerator
 
     public static Player GeneratePlayer()
     {
-        string[] firstNames = { "John", "David", "Michael", "James", "Robert", "William", "Carlos", "Juan", "Pedro", "Antonio" };
-        string[] lastNames = { "Smith", "Johnson", "Williams", "Brown", "Jones", "Davis", "Garcia", "Rodriguez", "Martinez", "Wilson" };
+        string[] firstNames = { "John", "David", "Michael", "James", "Robert", "William", "Carlos", "Juan", "Pedro",
+         "Antonio", "Cole", "Jimmy", "Charlie", "Tom", "Declan", "Loyd", "Carl", "Rick", "Wayne", "Danny"};
+        string[] lastNames = { "Smith", "Johnson", "Williams", "Brown", "Jones", "Davis", "Garcia", "Rodriguez",
+        "Martinez", "Wilson","Baines","Archer","Baker","Barker","Bowman","Coates","Charlton","Davis","Cowley",
+        "Dodds","Dyer","Fanning","Eastwood","Edwards","Fletcher","Fox","GoodWyn","Garner","Gold","Higgs","Hayes",
+        "Jacobs","Jones","Keane","Lawson","MacDonald","Maddison","McCann","Miller","O'niel","Newman","Parker",
+        "Newton","Payne","Radford","Ramsey","Reed","Stephens","Smith","Wally","Watkins","Wells","Wilkinson","Young","Yates"};
 
         string name = $"{firstNames[_random.Next(firstNames.Length)]} {lastNames[_random.Next(lastNames.Length)]}";
-        int age = _random.Next(17, 36);
+        int age = _random.Next(17, 37);
         PlayerPositions position = (PlayerPositions)_random.Next(Enum.GetValues(typeof(PlayerPositions)).Length);
 
         Player player = new Player
@@ -48,18 +53,18 @@ public class DataGenerator
             Attributes = new Dictionary<Attributes, int>()
         };
 
-        
+
         PlayerPositions primaryPosition = (PlayerPositions)_random.Next(Enum.GetValues(typeof(PlayerPositions)).Length);
         player.Positions.Add(primaryPosition);
 
-        
-        if (_random.Next(100) < 30)
+
+        if (_random.Next(100) < 30 && primaryPosition != PlayerPositions.GK)
         {
             PlayerPositions secondaryPosition;
             do
             {
                 secondaryPosition = (PlayerPositions)_random.Next(Enum.GetValues(typeof(PlayerPositions)).Length);
-            } while (secondaryPosition == primaryPosition);
+            } while (secondaryPosition == primaryPosition || secondaryPosition == PlayerPositions.GK);
 
             player.Positions.Add(secondaryPosition);
         }
@@ -68,15 +73,15 @@ public class DataGenerator
         foreach (Attributes attribute in Enum.GetValues(typeof(Attributes)))
         {
 
-            int baseValue = _random.Next(20, 44);
+            int baseValue = _random.Next(20, 50);
 
 
             if (IsAttributeRelevantToPosition(attribute, primaryPosition))
             {
-                baseValue += _random.Next(25, 55);
+                baseValue += _random.Next(20, 50);
             }
 
-            
+
             player.Attributes[attribute] = Math.Min(baseValue, 99);
         }
 
@@ -85,14 +90,15 @@ public class DataGenerator
 
     private static bool IsAttributeRelevantToPosition(Attributes attribute, PlayerPositions position)
     {
-        
+
         if (attribute == Attributes.Speed
         || attribute == Attributes.Strength
         || attribute == Attributes.Stanima
         || attribute == Attributes.FlairSkills
         || attribute == Attributes.Composure
         || attribute == Attributes.Leadership
-        || attribute == Attributes.Drive)
+        || attribute == Attributes.Drive
+        || attribute == Attributes.BallControl)
         {
             return true;
         }
