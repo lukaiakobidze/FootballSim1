@@ -1,4 +1,5 @@
 ﻿using System;
+using FootballManagerGame.Input;
 using FootballManagerGame.Views;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,22 +13,26 @@ public class Game1 : Game
     private SpriteBatch _spriteBatch;
     private GameState _gameState;
     private SpriteFont _font;
-    //private ScreenManager _screenManager;
+    public static bool ExitGame = false;
+    private InputState _inputState;
+
 
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
+        _inputState = new InputState();
     }
+
 
     protected override void Initialize()
     {
-        
+
         _gameState = new GameState
         {
             CurrentDate = new DateTime(2023, 7, 1), // Starting date for your game
-            PlayerTeam = new Models.Team{Name = "PSG"}
+            PlayerTeam = new Models.Team { Name = "PSG" }
         };
 
         base.Initialize();
@@ -39,17 +44,23 @@ public class Game1 : Game
         _font = Content.Load<SpriteFont>("GameFont");
 
         ScreenManager.Instance.AddScreen("MainMenu", new MainMenuScreen(_gameState, _font));
+        ScreenManager.Instance.AddScreen("TeamView", new TeamViewScreen(_gameState, _font));
+        ScreenManager.Instance.AddScreen("NewGame", new NewGameScreen(_gameState, _font));
         ScreenManager.Instance.ChangeScreen("MainMenu");
     }
-    
+
 
     protected override void Update(GameTime gameTime)
     {
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+        if (ExitGame)
             Exit();
 
-        // TODO: Add your update logic here
+        
+        _inputState.Update();
 
+
+        ScreenManager.Instance.CurrentScreen?.HandleInput(_inputState);
+        ScreenManager.Instance.Update(gameTime);
         base.Update(gameTime);
     }
 

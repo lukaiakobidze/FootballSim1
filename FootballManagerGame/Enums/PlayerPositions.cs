@@ -13,7 +13,7 @@ public enum PlayerPositions
     CM,
     CDM,
     CAM,
-    
+
     LM,
     LW,
     RM,
