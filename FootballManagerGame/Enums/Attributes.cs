@@ -4,7 +4,7 @@ public enum Attributes
 {
     //Physical
     Speed,
-    Strengh,
+    Strength,
     Stanima,
 
     //Technical
@@ -24,5 +24,11 @@ public enum Attributes
     Vision,
     Composure,
     Leadership,
-    Drive
+    Drive,
+
+    //Goalkeeping
+    Reflexes,
+    Diving,
+    Sweeping
+
 }

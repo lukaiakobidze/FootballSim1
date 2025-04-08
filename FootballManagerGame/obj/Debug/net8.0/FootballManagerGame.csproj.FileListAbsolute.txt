@@ -30,3 +30,4 @@ D:\CODING\C#\FootballSim\1\FootballManagerGame\obj\Debug\net8.0\refint\FootballM
 D:\CODING\C#\FootballSim\1\FootballManagerGame\obj\Debug\net8.0\FootballManagerGame.pdb
 D:\CODING\C#\FootballSim\1\FootballManagerGame\obj\Debug\net8.0\FootballManagerGame.genruntimeconfig.cache
 D:\CODING\C#\FootballSim\1\FootballManagerGame\obj\Debug\net8.0\ref\FootballManagerGame.dll
+d:\CODING\C#\FootballSim\1\FootballManagerGame\obj\Debug\net8.0\FootballManagerGame.sourcelink.json
