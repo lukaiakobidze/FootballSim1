@@ -10,15 +10,19 @@ using System.Collections.Generic;
 namespace FootballManagerGame.Views;
 
 
-public class TeamViewScreen : Screen
+public class NewGameTeamViewScreen : Screen
 {
     private GameState _gameState;
     private SpriteFont _font;
+    private GraphicsDeviceManager _graphics;
     private int _selectedPlayerIndex = 0;
-    public TeamViewScreen(GameState gameState, SpriteFont font)
+
+
+    public NewGameTeamViewScreen(GameState gameState, SpriteFont font, GraphicsDeviceManager graphics)
     {
         _gameState = gameState;
         _font = font;
+        _graphics = graphics;
     }
 
     public override void Update(GameTime gameTime)
@@ -28,9 +32,9 @@ public class TeamViewScreen : Screen
     public override void Draw(SpriteBatch spriteBatch)
     {
         spriteBatch.Begin();
-        spriteBatch.DrawString(_font, "Team: " + _gameState.PlayerTeam?.Name ?? "No Team Selected", new Vector2(100, 50), Color.White);
-        var orderedList = _gameState.PlayerTeam.Players.OrderBy(p => p.Positions.First()).ToList();
-        if (_gameState.PlayerTeam != null)
+        spriteBatch.DrawString(_font, "Team: " + _gameState.TeamSelected?.Name ?? "No Team Selected", new Vector2(100, 50), Color.White);
+        var orderedList = _gameState.TeamSelected.Players.OrderBy(p => p.Positions.First()).ToList();
+        if (_gameState.TeamSelected != null)
         {
             int y = 100;
             for (int i = 0; i < orderedList.Count; i++)
@@ -49,6 +53,7 @@ public class TeamViewScreen : Screen
                 spriteBatch.DrawString(_font, $"{orderedList[i].Overall}", new Vector2(500, y), colorOVR);
                 y += 30;
             }
+            spriteBatch.DrawString(_font, $"Press SPACE to Pick this team", new Vector2(100, _graphics.GraphicsDevice.Viewport.Height - 90), Color.White);
         }
         spriteBatch.End();
     }
@@ -57,7 +62,8 @@ public class TeamViewScreen : Screen
     {
         if (inputState.IsKeyPressed(Keys.Escape))
         {
-            ScreenManager.Instance.ChangeScreen("MainMenu");
+            _gameState.TeamSelected = null;
+            ScreenManager.Instance.ChangeScreen("NewGame");
         }
         if (inputState.IsKeyPressed(Keys.Up))
         {
@@ -66,15 +72,21 @@ public class TeamViewScreen : Screen
 
         if (inputState.IsKeyPressed(Keys.Down))
         {
-            _selectedPlayerIndex = Math.Min(_gameState.PlayerTeam.Players.Count - 1, _selectedPlayerIndex + 1);
+            _selectedPlayerIndex = Math.Min(_gameState.TeamSelected.Players.Count - 1, _selectedPlayerIndex + 1);
         }
         if (inputState.IsKeyPressed(Keys.Enter))
         {
-            var orderedList = _gameState.PlayerTeam.Players.OrderBy(p => p.Positions.First()).ToList();
+            var orderedList = _gameState.TeamSelected.Players.OrderBy(p => p.Positions.First()).ToList();
             _gameState.PlayerSelected = orderedList[_selectedPlayerIndex];
-            ScreenManager.Instance.AddScreen("PlayerView", new PlayerViewScreen(_gameState, _font, orderedList[_selectedPlayerIndex]));
-            ScreenManager.Instance.ChangeScreen("PlayerView");
+            ScreenManager.Instance.AddScreen("NewGamePlayerView", new NewGamePlayerViewScreen(_gameState, _font, orderedList[_selectedPlayerIndex]));
+            ScreenManager.Instance.ChangeScreen("NewGamePlayerView");
 
+        }
+        if (inputState.IsKeyPressed(Keys.Space))
+        {
+            _gameState.PlayerTeam = _gameState.TeamSelected;
+            ScreenManager.Instance.AddScreen("TeamView", new TeamViewScreen(_gameState, _font));
+            ScreenManager.Instance.ChangeScreen("TeamView");
         }
     }
 }

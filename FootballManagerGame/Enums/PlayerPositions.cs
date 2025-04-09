@@ -2,6 +2,7 @@ namespace FootballManagerGame.Enums;
 
 public enum PlayerPositions
 {
+    NONE,
     GK,
 
     CB,

@@ -10,6 +10,7 @@ public class GameState
     public List<Team> AllTeams { get; set; }
     public DateTime CurrentDate { get; set; }
     public Player PlayerSelected { get; set; }
+    public Team TeamSelected { get; set; }
 
 
 }

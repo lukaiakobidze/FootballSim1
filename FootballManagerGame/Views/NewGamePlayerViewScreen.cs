@@ -8,12 +8,12 @@ using FootballManagerGame.Models;
 using System.Linq;
 namespace FootballManagerGame.Views;
 
-public class PlayerViewScreen : Screen
+public class NewGamePlayerViewScreen : Screen
 {
     private GameState _gameState;
     private SpriteFont _font;
     private Player _player;
-    public PlayerViewScreen(GameState gameState, SpriteFont font, Player player)
+    public NewGamePlayerViewScreen(GameState gameState, SpriteFont font, Player player)
     {
         _gameState = gameState;
         _font = font;
@@ -28,6 +28,7 @@ public class PlayerViewScreen : Screen
     {
         spriteBatch.Begin();
         spriteBatch.DrawString(_font, "Player:  " + _player.Name ?? "No Player Selected", new Vector2(100, 50), Color.White);
+
         if (_player != null)
         {
             int i = 0;
@@ -71,6 +72,7 @@ public class PlayerViewScreen : Screen
 
             }
         }
+
         spriteBatch.End();
     }
 
@@ -78,7 +80,7 @@ public class PlayerViewScreen : Screen
     {
         if (inputState.IsKeyPressed(Keys.Escape))
         {
-            ScreenManager.Instance.ChangeScreen("TeamView");
+            ScreenManager.Instance.ChangeScreen("NewGameTeamView");
             _player = null;
         }
     }

@@ -14,13 +14,15 @@ public class NewGameScreen : Screen
 {
     private GameState _gameState;
     private SpriteFont _font;
+    private GraphicsDeviceManager _graphics;
     private List<Team> _availableTeams;
     private int _selectedTeamIndex = 0;
 
-    public NewGameScreen(GameState gameState, SpriteFont font)
+    public NewGameScreen(GameState gameState, SpriteFont font, GraphicsDeviceManager graphics)
     {
         _gameState = gameState;
         _font = font;
+        _graphics = graphics;
 
         _gameState.AllTeams = DataGenerator.GenerateLeague("League 1", 20);
         _availableTeams = _gameState.AllTeams;
@@ -61,9 +63,9 @@ public class NewGameScreen : Screen
 
         if (inputState.IsKeyPressed(Keys.Enter))
         {
-            _gameState.PlayerTeam = _availableTeams[_selectedTeamIndex];
-            ScreenManager.Instance.AddScreen("TeamView", new TeamViewScreen(_gameState, _font));
-            ScreenManager.Instance.ChangeScreen("TeamView");
+            _gameState.TeamSelected = _availableTeams[_selectedTeamIndex];
+            ScreenManager.Instance.AddScreen("NewGameTeamView", new NewGameTeamViewScreen(_gameState, _font, _graphics));
+            ScreenManager.Instance.ChangeScreen("NewGameTeamView");
         }
 
         if (inputState.IsKeyPressed(Keys.Escape))
