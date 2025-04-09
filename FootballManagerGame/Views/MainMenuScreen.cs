@@ -12,14 +12,15 @@ namespace FootballManagerGame.Views;
 
 public class MainMenuScreen : Screen
 {
-    private GameState _gameState;
     private SpriteFont _font;
+    private GraphicsDeviceManager _graphics;
     private int _selectionIndex = 0;
     private List<string> _strings;
-    public MainMenuScreen(SpriteFont font)
+    public MainMenuScreen(SpriteFont font, GraphicsDeviceManager graphics)
     {
         _font = font;
-        _strings = new List<string>(){"New Game", "Exit"};
+        _graphics = graphics;
+        _strings = new List<string>() { "New Game", "Exit" };
     }
 
     public override void Update(GameTime gameTime)
@@ -39,7 +40,6 @@ public class MainMenuScreen : Screen
 
     public override void HandleInput(InputState inputState)
     {
-        
         if (inputState.IsKeyPressed(Keys.Up))
         {
             _selectionIndex = Math.Max(0, _selectionIndex - 1);
@@ -52,17 +52,17 @@ public class MainMenuScreen : Screen
 
         if (inputState.IsKeyPressed(Keys.Enter))
         {
-            if (_selectionIndex == 0){
-                //_gameState.AllTeams = DataGenerator.GenerateLeague("Sample League", 10);
+            if (_selectionIndex == 0)
+            {
                 GameState gameState = new GameState();
-                ScreenManager.Instance.AddScreen("NewGame", new NewGameScreen(gameState, _font));
+                ScreenManager.Instance.AddScreen("NewGame", new NewGameScreen(gameState, _font, _graphics));
                 ScreenManager.Instance.ChangeScreen("NewGame");
-        
             }
-            if (_selectionIndex == 1){
+            if (_selectionIndex == 1)
+            {
                 Game1.ExitGame = true;
             }
-            
+
         }
     }
 }

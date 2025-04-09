@@ -53,18 +53,23 @@ public class DataGenerator
             Attributes = new Dictionary<Attributes, int>()
         };
 
-
-        PlayerPositions primaryPosition = (PlayerPositions)_random.Next(Enum.GetValues(typeof(PlayerPositions)).Length);
+        
+        PlayerPositions primaryPosition = PlayerPositions.NONE;
+        do{
+            primaryPosition = (PlayerPositions)_random.Next(Enum.GetValues(typeof(PlayerPositions)).Length);
+        }
+        while(primaryPosition == PlayerPositions.NONE);
         player.Positions.Add(primaryPosition);
 
 
+
+        PlayerPositions secondaryPosition = PlayerPositions.NONE;
         if (_random.Next(100) < 30 && primaryPosition != PlayerPositions.GK)
         {
-            PlayerPositions secondaryPosition;
             do
             {
                 secondaryPosition = (PlayerPositions)_random.Next(Enum.GetValues(typeof(PlayerPositions)).Length);
-            } while (secondaryPosition == primaryPosition || secondaryPosition == PlayerPositions.GK);
+            } while (secondaryPosition == primaryPosition || secondaryPosition == PlayerPositions.GK || secondaryPosition == PlayerPositions.NONE);
 
             player.Positions.Add(secondaryPosition);
         }
@@ -75,21 +80,34 @@ public class DataGenerator
 
             int baseValue = _random.Next(20, 50);
 
-
-            if (IsAttributeRelevantToPosition(attribute, primaryPosition))
+            
+            if (IsAttributeRelevantToPosition(attribute, primaryPosition) || IsAttributeRelevantToPosition(attribute, secondaryPosition))
             {
                 baseValue += _random.Next(20, 50);
             }
+            
+            
 
 
             player.Attributes[attribute] = Math.Min(baseValue, 99);
         }
+        float ovr = 0;
+        int cnt = 0;
+        foreach (var att in player.Attributes)
+        {
+            if(IsAttributeRelevantToPosition(att.Key, primaryPosition)){
+                ovr += att.Value;
+                cnt++;
+            }
+        }
+        player.Overall = (int)(ovr / cnt);
 
         return player;
     }
 
     private static bool IsAttributeRelevantToPosition(Attributes attribute, PlayerPositions position)
     {
+        if(position == PlayerPositions.NONE){return false;}
 
         if (attribute == Attributes.Speed
         || attribute == Attributes.Strength

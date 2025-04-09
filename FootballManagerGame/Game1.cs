@@ -25,7 +25,7 @@ public class Game1 : Game
         _inputState = new InputState();
         _graphics.PreferredBackBufferWidth = 1920;
         _graphics.PreferredBackBufferHeight = 1080;
-        _graphics.IsFullScreen = true;        
+        _graphics.IsFullScreen = true;
     }
 
 
@@ -45,10 +45,7 @@ public class Game1 : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         _font = Content.Load<SpriteFont>("GameFont");
 
-        ScreenManager.Instance.AddScreen("MainMenu", new MainMenuScreen(_font));
-        //ScreenManager.Instance.AddScreen("TeamView", new TeamViewScreen(_gameState, _font));
-        //ScreenManager.Instance.AddScreen("NewGame", new NewGameScreen(_gameState, _font));
-        //ScreenManager.Instance.AddScreen("PlayerView", new PlayerViewScreen(_gameState, _font));
+        ScreenManager.Instance.AddScreen("MainMenu", new MainMenuScreen(_font, _graphics));
         ScreenManager.Instance.ChangeScreen("MainMenu");
     }
 
@@ -58,7 +55,7 @@ public class Game1 : Game
         if (ExitGame)
             Exit();
 
-        
+
         _inputState.Update();
 
 
@@ -69,9 +66,9 @@ public class Game1 : Game
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.CornflowerBlue);
+        GraphicsDevice.Clear(Color.Black);
         ScreenManager.Instance.Draw(_spriteBatch);
-        // TODO: Add your drawing code here
+
 
         base.Draw(gameTime);
     }
