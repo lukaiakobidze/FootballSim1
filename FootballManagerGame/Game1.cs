@@ -1,4 +1,5 @@
 ﻿using System;
+using FootballManagerGame.Data;
 using FootballManagerGame.Input;
 using FootballManagerGame.Views;
 using Microsoft.Xna.Framework;
@@ -11,11 +12,10 @@ public class Game1 : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
-    private GameState _gameState;
     private SpriteFont _font;
     public static bool ExitGame = false;
     private InputState _inputState;
-
+    private GameDataService _gameDataService;
 
     public Game1()
     {
@@ -32,11 +32,7 @@ public class Game1 : Game
     protected override void Initialize()
     {
 
-        _gameState = new GameState
-        {
-            CurrentDate = new DateTime(2024, 8, 1)
-        };
-
+        _gameDataService = new GameDataService();
         base.Initialize();
     }
 
@@ -45,7 +41,7 @@ public class Game1 : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         _font = Content.Load<SpriteFont>("GameFont");
 
-        ScreenManager.Instance.AddScreen("MainMenu", new MainMenuScreen(_font, _graphics));
+        ScreenManager.Instance.AddScreen("MainMenu", new MainMenuScreen(_font, _graphics, _gameDataService));
         ScreenManager.Instance.ChangeScreen("MainMenu");
     }
 
