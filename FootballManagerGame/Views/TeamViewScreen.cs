@@ -14,9 +14,11 @@ public class TeamViewScreen : Screen
 {
     private GameState _gameState;
     private SpriteFont _font;
+    private GraphicsDeviceManager _graphics;
     private int _selectedPlayerIndex = 0;
-    public TeamViewScreen(GameState gameState, SpriteFont font)
+    public TeamViewScreen(GameState gameState, SpriteFont font, GraphicsDeviceManager graphics)
     {
+        _graphics = graphics;
         _gameState = gameState;
         _font = font;
     }
@@ -57,16 +59,30 @@ public class TeamViewScreen : Screen
     {
         if (inputState.IsKeyPressed(Keys.Escape))
         {
+            
             ScreenManager.Instance.ChangeScreen("MainMenu");
         }
         if (inputState.IsKeyPressed(Keys.Up))
         {
-            _selectedPlayerIndex = Math.Max(0, _selectedPlayerIndex - 1);
+            if (_selectedPlayerIndex == 0)
+            {
+                _selectedPlayerIndex = _gameState.TeamSelected.Players.Count - 1;
+            }
+            else{
+                _selectedPlayerIndex = Math.Max(0, _selectedPlayerIndex - 1);
+            }
         }
 
         if (inputState.IsKeyPressed(Keys.Down))
         {
-            _selectedPlayerIndex = Math.Min(_gameState.PlayerTeam.Players.Count - 1, _selectedPlayerIndex + 1);
+            if (_selectedPlayerIndex == _gameState.TeamSelected.Players.Count - 1)
+            {
+                _selectedPlayerIndex = 0;
+            }
+            else
+            {
+                _selectedPlayerIndex = Math.Min(_gameState.TeamSelected.Players.Count - 1, _selectedPlayerIndex + 1);
+            }
         }
         if (inputState.IsKeyPressed(Keys.Enter))
         {

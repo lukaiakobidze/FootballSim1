@@ -53,12 +53,13 @@ public class DataGenerator
             Attributes = new Dictionary<Attributes, int>()
         };
 
-        
+
         PlayerPositions primaryPosition = PlayerPositions.NONE;
-        do{
+        do
+        {
             primaryPosition = (PlayerPositions)_random.Next(Enum.GetValues(typeof(PlayerPositions)).Length);
         }
-        while(primaryPosition == PlayerPositions.NONE);
+        while (primaryPosition == PlayerPositions.NONE);
         player.Positions.Add(primaryPosition);
 
 
@@ -74,19 +75,51 @@ public class DataGenerator
             player.Positions.Add(secondaryPosition);
         }
 
-
+        int rand = _random.Next(20);
         foreach (Attributes attribute in Enum.GetValues(typeof(Attributes)))
         {
+            int baseValue;
+            if (rand == 1)
+            {
+                baseValue = _random.Next(45, 95);
+            }
+            else if (rand < 5)
+            {
+                baseValue = _random.Next(35, 90);
+            }
+            else if (rand < 15)
+            {
+                baseValue = _random.Next(35, 80);
+            }
+            else
+            {
+                baseValue = _random.Next(25, 60);
+            }
 
-            int baseValue = _random.Next(20, 50);
 
-            
+
             if (IsAttributeRelevantToPosition(attribute, primaryPosition) || IsAttributeRelevantToPosition(attribute, secondaryPosition))
             {
-                baseValue += _random.Next(20, 50);
+                if (rand == 1)
+                {
+                    baseValue = _random.Next(80, 99);
+                }
+                else if (rand < 5)
+                {
+                    baseValue = _random.Next(70, 95);
+                }
+                else if (rand < 15)
+                {
+                    baseValue = _random.Next(60, 85);
+                }
+                else
+                {
+                    baseValue = _random.Next(30, 70);
+                }
+
             }
-            
-            
+
+
 
 
             player.Attributes[attribute] = Math.Min(baseValue, 99);
@@ -95,7 +128,8 @@ public class DataGenerator
         int cnt = 0;
         foreach (var att in player.Attributes)
         {
-            if(IsAttributeRelevantToPosition(att.Key, primaryPosition)){
+            if (IsAttributeRelevantToPosition(att.Key, primaryPosition))
+            {
                 ovr += att.Value;
                 cnt++;
             }
@@ -107,7 +141,7 @@ public class DataGenerator
 
     private static bool IsAttributeRelevantToPosition(Attributes attribute, PlayerPositions position)
     {
-        if(position == PlayerPositions.NONE){return false;}
+        if (position == PlayerPositions.NONE) { return false; }
 
         if (attribute == Attributes.Speed
         || attribute == Attributes.Strength
@@ -134,13 +168,16 @@ public class DataGenerator
             case PlayerPositions.CDM:
                 return attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing || attribute == Attributes.LongShooting || attribute == Attributes.Tackling || attribute == Attributes.Sliding || attribute == Attributes.Strength;
             case PlayerPositions.CM:
-                return attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing || attribute == Attributes.LongShooting;
+                return attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing || attribute == Attributes.LongShooting || attribute == Attributes.BallControl || attribute == Attributes.Dribbling || attribute == Attributes.Vision;
 
             case PlayerPositions.CAM:
-                return attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing || attribute == Attributes.Vision || attribute == Attributes.Dribbling || attribute == Attributes.BallControl || attribute == Attributes.LongShooting;
+                return attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing || attribute == Attributes.Vision || attribute == Attributes.Dribbling || attribute == Attributes.BallControl || attribute == Attributes.LongShooting ;
             case PlayerPositions.LM:
             case PlayerPositions.RM:
-                return attribute == Attributes.Crossing || attribute == Attributes.Vision || attribute == Attributes.Dribbling || attribute == Attributes.BallControl || attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing || attribute == Attributes.Vision;
+                return attribute == Attributes.Crossing || attribute == Attributes.Vision || attribute == Attributes.Dribbling || attribute == Attributes.BallControl || attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing;
+            case PlayerPositions.LWB:
+            case PlayerPositions.RWB:
+                return attribute == Attributes.Tackling || attribute == Attributes.Crossing || attribute == Attributes.Vision || attribute == Attributes.Dribbling || attribute == Attributes.BallControl || attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing;
 
             case PlayerPositions.LW:
             case PlayerPositions.RW:
@@ -149,6 +186,8 @@ public class DataGenerator
             case PlayerPositions.ST:
                 return attribute == Attributes.Finishing || attribute == Attributes.LongShooting || attribute == Attributes.Dribbling || attribute == Attributes.BallControl;
             case PlayerPositions.CF:
+            case PlayerPositions.LF:
+            case PlayerPositions.RF:
                 return attribute == Attributes.Finishing || attribute == Attributes.LongShooting || attribute == Attributes.Dribbling || attribute == Attributes.BallControl || attribute == Attributes.Vision || attribute == Attributes.ShortPassing;
 
             default:

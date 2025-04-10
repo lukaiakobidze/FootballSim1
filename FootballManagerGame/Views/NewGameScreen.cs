@@ -15,16 +15,19 @@ public class NewGameScreen : Screen
     private GameState _gameState;
     private SpriteFont _font;
     private GraphicsDeviceManager _graphics;
+    private GameDataService _gameDataService;
+    private int _saveSlot;
     private List<Team> _availableTeams;
     private int _selectedTeamIndex = 0;
 
-    public NewGameScreen(GameState gameState, SpriteFont font, GraphicsDeviceManager graphics)
+    public NewGameScreen(GameState gameState, SpriteFont font, GraphicsDeviceManager graphics, GameDataService gameDataService, int saveSlot)
     {
         _gameState = gameState;
         _font = font;
         _graphics = graphics;
-
-        _gameState.AllTeams = DataGenerator.GenerateLeague("League 1", 20);
+        _gameDataService = gameDataService;
+        _saveSlot = saveSlot;
+        
         _availableTeams = _gameState.AllTeams;
     }
 
@@ -45,26 +48,41 @@ public class NewGameScreen : Screen
             spriteBatch.DrawString(_font, _availableTeams[i].Name, new Vector2(100, 100 + i * 30), color);
         }
 
-        spriteBatch.DrawString(_font, "Press Enter to select team", new Vector2(100, 100 + (_availableTeams.Count * 30)), Color.White);
+        spriteBatch.DrawString(_font, "Press Enter to select team", new Vector2(100, 130 + (_availableTeams.Count * 30)), Color.White);
         spriteBatch.End();
     }
 
     public override void HandleInput(InputState inputState)
     {
         if (inputState.IsKeyPressed(Keys.Up))
-        {
-            _selectedTeamIndex = Math.Max(0, _selectedTeamIndex - 1);
+        {   
+            if (_selectedTeamIndex == 0)
+            {
+                _selectedTeamIndex = _availableTeams.Count - 1;
+            }
+            else{
+                _selectedTeamIndex = Math.Max(0, _selectedTeamIndex - 1);
+            }
+            
         }
 
         if (inputState.IsKeyPressed(Keys.Down))
         {
-            _selectedTeamIndex = Math.Min(_availableTeams.Count - 1, _selectedTeamIndex + 1);
+            if (_selectedTeamIndex == _availableTeams.Count - 1)
+            {
+                _selectedTeamIndex = 0;
+            }
+            else
+            {
+                _selectedTeamIndex = Math.Min(_availableTeams.Count - 1, _selectedTeamIndex + 1);
+            }
+
         }
 
         if (inputState.IsKeyPressed(Keys.Enter))
         {
             _gameState.TeamSelected = _availableTeams[_selectedTeamIndex];
-            ScreenManager.Instance.AddScreen("NewGameTeamView", new NewGameTeamViewScreen(_gameState, _font, _graphics));
+            ScreenManager.Instance.AddScreen("NewGameTeamView", new NewGameTeamViewScreen(_gameState, _font, _graphics, _gameDataService, _saveSlot));
             ScreenManager.Instance.ChangeScreen("NewGameTeamView");
         }
 
