@@ -32,7 +32,8 @@ public class TableViewScreen : Screen
 
         TableList = _gameState.LeagueSelected.Table
         .Select(Table => new List<string> { Table.Key }.Concat(Table.Value.Select(i => i.ToString())).ToList())
-        .OrderBy(entry => int.Parse(entry[4]))
+        .OrderByDescending(entry => int.Parse(entry[5]))
+        .ThenByDescending(entry => int.Parse(entry[8]))
         .ToList();
     }
 
@@ -50,7 +51,7 @@ public class TableViewScreen : Screen
         spriteBatch.DrawString(_font, $"W", new Vector2(x + 350, y + 60), Color.White);
         spriteBatch.DrawString(_font, $"D", new Vector2(x + 400, y + 60), Color.White);
         spriteBatch.DrawString(_font, $"L", new Vector2(x + 450, y + 60), Color.White);
-        spriteBatch.DrawString(_font, $"P", new Vector2(x + 500, y + 60), Color.White);
+        spriteBatch.DrawString(_font, $"Pts", new Vector2(x + 500, y + 60), Color.White);
         spriteBatch.DrawString(_font, $"GF", new Vector2(x + 550, y + 60), Color.White);
         spriteBatch.DrawString(_font, $"GA", new Vector2(x + 600, y + 60), Color.White);
         spriteBatch.DrawString(_font, $"+/-", new Vector2(x + 650, y + 60), Color.White);
@@ -59,7 +60,8 @@ public class TableViewScreen : Screen
         foreach (var team in TableList)
         {
             Color color = (i == _selectionIndex) ? Color.Yellow : Color.White;
-    
+            if (team[0] == _gameState.PlayerTeam.Name){ color = Color.Cyan; }
+
             spriteBatch.DrawString(_font, $"{team[0]}", new Vector2(x, y + 90), color);
             spriteBatch.DrawString(_font, $"{team[1]}", new Vector2(x + 300, y + 90), color);
             spriteBatch.DrawString(_font, $"{team[2]}", new Vector2(x + 350, y + 90), color);

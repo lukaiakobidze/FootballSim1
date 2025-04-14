@@ -24,7 +24,7 @@ public class CareerMenuScreen : Screen
         _graphics = graphics;
         _gameDataService = gameDataService;
         _gameState = gameState;
-        _strings = new List<string>() {"My Team", "League Table", "Main Menu"};
+        _strings = new List<string>() {"My Team", "League Table", "All Fixtures", "Main Menu"};
     }
 
     public override void Update(GameTime gameTime)
@@ -89,6 +89,12 @@ public class CareerMenuScreen : Screen
                 _gameState.LeagueSelected = _gameState.PlayerLeague;
                 ScreenManager.Instance.AddScreen("TableView", new TableViewScreen(_font, _graphics, _gameDataService, _gameState));
                 ScreenManager.Instance.ChangeScreen("TableView");
+            }
+            else if (_selectionIndex == 2)
+            {
+                _gameState.LeagueSelected = _gameState.PlayerLeague;
+                ScreenManager.Instance.AddScreen("FixturesView", new FixturesViewScreen(_font, _graphics, _gameState));
+                ScreenManager.Instance.ChangeScreen("FixturesView");
             }
             else if (_selectionIndex == _strings.Count - 1)
             {
