@@ -33,6 +33,7 @@ public class NewGamePlayerViewScreen : Screen
         {
             int i = 0;
             int y = 130;
+            int x = 100;
             Color color = Color.White;
             Color colorStats = Color.White;
 
@@ -40,8 +41,8 @@ public class NewGamePlayerViewScreen : Screen
             spriteBatch.DrawString(_font, $"Positions: {positions}", new Vector2(100, y - 30), color);
             spriteBatch.DrawString(_font, $"Phyisical", new Vector2(100, y), color);
             spriteBatch.DrawString(_font, $"Technical", new Vector2(100, y + 150), color);
-            spriteBatch.DrawString(_font, $"Mental", new Vector2(100, y + 510), color);
-            spriteBatch.DrawString(_font, $"Goalkeeping", new Vector2(100, y + 690), color);
+            spriteBatch.DrawString(_font, $"Mental", new Vector2(500, y), color);
+            spriteBatch.DrawString(_font, $"Goalkeeping", new Vector2(500, y + 180), color);
 
             if (_player.Overall < 40) { color = Color.IndianRed; }
             else if (_player.Overall < 60) { color = Color.Orange; }
@@ -55,7 +56,7 @@ public class NewGamePlayerViewScreen : Screen
             {
                 y += 30;
                 if (i == 3) { y += 60; }
-                else if (i == 13) { y += 60; }
+                else if (i == 13) { y = 160; x = 500;}
                 else if (i == 17) { y += 60; }
 
                 if (att.Value < 40) { colorStats = Color.IndianRed; }
@@ -65,8 +66,8 @@ public class NewGamePlayerViewScreen : Screen
                 else if (att.Value < 90) { colorStats = Color.SpringGreen; }
                 else { colorStats = Color.Cyan; }
 
-                spriteBatch.DrawString(_font, $"{att.Key}", new Vector2(100, y), Color.Silver);
-                spriteBatch.DrawString(_font, $"{att.Value}", new Vector2(300, y), colorStats);
+                spriteBatch.DrawString(_font, $"{att.Key}", new Vector2(x, y), Color.Silver);
+                spriteBatch.DrawString(_font, $"{att.Value}", new Vector2(x + 200, y), colorStats);
 
                 i++;
 

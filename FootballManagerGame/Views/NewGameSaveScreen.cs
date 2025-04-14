@@ -44,8 +44,10 @@ public class NewGameSaveScreen : Screen
         {
             Color color = (i == _selectionIndex) ? Color.Yellow : Color.White;
             spriteBatch.DrawString(_font, $"Save Slot {i+1}", new Vector2(100, 110 + i * 30), color);
-            foreach (var state in _gameStates){
-                if(i+1 == state.SaveSlot){
+            foreach (var state in _gameStates)
+            {
+                if (state != null && i + 1 == state.SaveSlot && state.PlayerTeam != null)
+                {
                     spriteBatch.DrawString(_font, $"Team: {state.PlayerTeam.Name}", new Vector2(300, 110 + i * 30), color);
                 }
             }

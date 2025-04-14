@@ -23,9 +23,9 @@ public class Game1 : Game
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
         _inputState = new InputState();
-        _graphics.PreferredBackBufferWidth = 1920;
-        _graphics.PreferredBackBufferHeight = 1080;
-        _graphics.IsFullScreen = true;
+        _graphics.PreferredBackBufferWidth = 1440;
+        _graphics.PreferredBackBufferHeight = 900;
+        _graphics.IsFullScreen = false;
     }
 
 
