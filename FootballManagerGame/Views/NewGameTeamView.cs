@@ -38,7 +38,7 @@ public class NewGameTeamViewScreen : Screen
     {
         spriteBatch.Begin();
         spriteBatch.DrawString(_font, "Team: " + _gameState.TeamSelected?.Name ?? "No Team Selected", new Vector2(100, 50), Color.White);
-        var orderedList = _gameState.TeamSelected.Players.OrderBy(p => p.Positions.First()).ToList();
+        var orderedList = _gameState.TeamSelected.Players.OrderBy(p => p.Positions.FirstOrDefault()).ToList();
         if (_gameState.TeamSelected != null)
         {
             int y = 100;
@@ -65,12 +65,6 @@ public class NewGameTeamViewScreen : Screen
 
     public override void HandleInput(InputState inputState)
     {
-        if (inputState.IsKeyPressed(Keys.Escape))
-        {
-            _gameState.TeamSelected = null;
-            ScreenManager.Instance.ChangeScreen("NewGame");
-        }
-
         if (inputState.IsKeyPressed(Keys.Up))
         {
             if (_selectedPlayerIndex == 0)
@@ -107,8 +101,14 @@ public class NewGameTeamViewScreen : Screen
         {
             _gameState.PlayerTeam = _gameState.TeamSelected;
             _gameDataService.SaveGame(_gameState, $"Save{_saveSlot}");
-            ScreenManager.Instance.AddScreen("TeamView", new TeamViewScreen(_gameState, _font, _graphics));
-            ScreenManager.Instance.ChangeScreen("TeamView");
+            ScreenManager.Instance.AddScreen("CareerMenu", new CareerMenuScreen(_font, _graphics, _gameDataService, _gameState));
+            ScreenManager.Instance.ChangeScreen("CareerMenu");
+        }
+
+        if (inputState.IsKeyPressed(Keys.Escape))
+        {
+            _gameState.TeamSelected = null;
+            ScreenManager.Instance.ChangeScreen("NewGame");
         }
     }
 }

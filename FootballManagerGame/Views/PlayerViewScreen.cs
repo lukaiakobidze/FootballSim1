@@ -31,16 +31,18 @@ public class PlayerViewScreen : Screen
         if (_player != null)
         {
             int i = 0;
-            int y = 130;
+            int y = 160;
+            int x = 100;
             Color color = Color.White;
             Color colorStats = Color.White;
 
             string positions = string.Join("/", _player.Positions);
-            spriteBatch.DrawString(_font, $"Positions: {positions}", new Vector2(100, y - 30), color);
+            spriteBatch.DrawString(_font, $"Positions: {positions}", new Vector2(100, y - 60), color);
+            spriteBatch.DrawString(_font, $"Overall:", new Vector2(100, y - 30), color);
             spriteBatch.DrawString(_font, $"Phyisical", new Vector2(100, y), color);
             spriteBatch.DrawString(_font, $"Technical", new Vector2(100, y + 150), color);
-            spriteBatch.DrawString(_font, $"Mental", new Vector2(100, y + 510), color);
-            spriteBatch.DrawString(_font, $"Goalkeeping", new Vector2(100, y + 690), color);
+            spriteBatch.DrawString(_font, $"Mental", new Vector2(400, y), color);
+            spriteBatch.DrawString(_font, $"Goalkeeping", new Vector2(400, y + 180), color);
 
             if (_player.Overall < 40) { color = Color.IndianRed; }
             else if (_player.Overall < 60) { color = Color.Orange; }
@@ -48,13 +50,13 @@ public class PlayerViewScreen : Screen
             else if (_player.Overall < 80) { color = Color.LightGreen; }
             else if (_player.Overall < 90) { color = Color.SpringGreen; }
             else { color = Color.Cyan; }
-            spriteBatch.DrawString(_font, $"{_player.Overall}", new Vector2(300, y - 30), color);
+            spriteBatch.DrawString(_font, $"{_player.Overall}", new Vector2(x + 180, y - 30), color);
 
             foreach (var att in _player.Attributes)
             {
                 y += 30;
                 if (i == 3) { y += 60; }
-                else if (i == 13) { y += 60; }
+                else if (i == 13) { y = 190; x = 400;}
                 else if (i == 17) { y += 60; }
 
                 if (att.Value < 40) { colorStats = Color.IndianRed; }
@@ -64,8 +66,8 @@ public class PlayerViewScreen : Screen
                 else if (att.Value < 90) { colorStats = Color.SpringGreen; }
                 else { colorStats = Color.Cyan; }
 
-                spriteBatch.DrawString(_font, $"{att.Key}", new Vector2(100, y), Color.Silver);
-                spriteBatch.DrawString(_font, $"{att.Value}", new Vector2(300, y), colorStats);
+                spriteBatch.DrawString(_font, $"{att.Key}", new Vector2(x, y), Color.Silver);
+                spriteBatch.DrawString(_font, $"{att.Value}", new Vector2(x + 180, y), colorStats);
 
                 i++;
 

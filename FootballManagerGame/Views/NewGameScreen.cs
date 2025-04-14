@@ -28,7 +28,7 @@ public class NewGameScreen : Screen
         _gameDataService = gameDataService;
         _saveSlot = saveSlot;
         
-        _availableTeams = _gameState.AllTeams;
+        _availableTeams = _gameState.Leagues[0].teams;
     }
 
     public override void Update(GameTime gameTime)

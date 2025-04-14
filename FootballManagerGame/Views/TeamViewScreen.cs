@@ -16,11 +16,13 @@ public class TeamViewScreen : Screen
     private SpriteFont _font;
     private GraphicsDeviceManager _graphics;
     private int _selectedPlayerIndex = 0;
-    public TeamViewScreen(GameState gameState, SpriteFont font, GraphicsDeviceManager graphics)
+    private string _origin;
+    public TeamViewScreen(GameState gameState, SpriteFont font, GraphicsDeviceManager graphics, string origin)
     {
         _graphics = graphics;
         _gameState = gameState;
         _font = font;
+        _origin = origin;
     }
 
     public override void Update(GameTime gameTime)
@@ -30,9 +32,9 @@ public class TeamViewScreen : Screen
     public override void Draw(SpriteBatch spriteBatch)
     {
         spriteBatch.Begin();
-        spriteBatch.DrawString(_font, "Team: " + _gameState.PlayerTeam?.Name ?? "No Team Selected", new Vector2(100, 50), Color.White);
-        var orderedList = _gameState.PlayerTeam.Players.OrderBy(p => p.Positions.First()).ToList();
-        if (_gameState.PlayerTeam != null)
+        spriteBatch.DrawString(_font, "Team: " + _gameState.TeamSelected?.Name ?? "No Team Selected", new Vector2(100, 50), Color.White);
+        var orderedList = _gameState.TeamSelected.Players.OrderBy(p => p.Positions.First()).ToList();
+        if (_gameState.TeamSelected != null)
         {
             int y = 100;
             for (int i = 0; i < orderedList.Count; i++)
@@ -57,11 +59,6 @@ public class TeamViewScreen : Screen
 
     public override void HandleInput(InputState inputState)
     {
-        if (inputState.IsKeyPressed(Keys.Escape))
-        {
-            
-            ScreenManager.Instance.ChangeScreen("MainMenu");
-        }
         if (inputState.IsKeyPressed(Keys.Up))
         {
             if (_selectedPlayerIndex == 0)
@@ -86,11 +83,22 @@ public class TeamViewScreen : Screen
         }
         if (inputState.IsKeyPressed(Keys.Enter))
         {
-            var orderedList = _gameState.PlayerTeam.Players.OrderBy(p => p.Positions.First()).ToList();
+            var orderedList = _gameState.TeamSelected.Players.OrderBy(p => p.Positions.First()).ToList();
             _gameState.PlayerSelected = orderedList[_selectedPlayerIndex];
             ScreenManager.Instance.AddScreen("PlayerView", new PlayerViewScreen(_gameState, _font, orderedList[_selectedPlayerIndex]));
             ScreenManager.Instance.ChangeScreen("PlayerView");
 
+        }
+        if (inputState.IsKeyPressed(Keys.Escape))
+        {
+            _gameState.TeamSelected = null;
+            if(_origin == "TableView"){
+                ScreenManager.Instance.ChangeScreen("TableView");
+            }
+            else if (_origin == "CareerMenu"){
+                ScreenManager.Instance.ChangeScreen("CareerMenu");
+            }
+            
         }
     }
 }

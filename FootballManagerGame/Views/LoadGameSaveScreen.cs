@@ -41,20 +41,28 @@ public class LoadGameSaveScreen : Screen
     public override void Draw(SpriteBatch spriteBatch)
     {
         spriteBatch.Begin();
+
         spriteBatch.DrawString(_font, "Select Save Slot To Load:", new Vector2(100, 50), Color.White);
+
         for (int i = 0; i < _saveAmount; i++)
         {
             Color color = (i == _selectionIndex) ? Color.Yellow : Color.White;
+
             spriteBatch.DrawString(_font, $"Save Slot {i+1}", new Vector2(100, 110 + i * 30), color);
-            foreach (var state in _gameStates){
-                if(i+1 == state.SaveSlot){
+
+            foreach (var state in _gameStates)
+            {
+                if (state != null && i + 1 == state.SaveSlot && state.PlayerTeam != null)
+                {
                     spriteBatch.DrawString(_font, $"Team: {state.PlayerTeam.Name}", new Vector2(300, 110 + i * 30), color);
                 }
             }
         }
+
         if(_error){
             spriteBatch.DrawString(_font, $"Save is empty!", new Vector2(100, _graphics.GraphicsDevice.Viewport.Height - 60), Color.White);
         }
+
         spriteBatch.End();
     }
 
@@ -89,8 +97,8 @@ public class LoadGameSaveScreen : Screen
         {
             if (_gameDataService.GetSaveGames().Contains($"Save{_selectionIndex + 1}")){
                 GameState gameState = _gameDataService.LoadGame($"Save{_selectionIndex + 1}");
-                ScreenManager.Instance.AddScreen("TeamView", new TeamViewScreen(gameState, _font, _graphics));
-                ScreenManager.Instance.ChangeScreen("TeamView");
+                ScreenManager.Instance.AddScreen("CareerMenu", new CareerMenuScreen(_font, _graphics, _gameDataService, gameState));
+                ScreenManager.Instance.ChangeScreen("CareerMenu");
             }
             else{
                 _error = true;
