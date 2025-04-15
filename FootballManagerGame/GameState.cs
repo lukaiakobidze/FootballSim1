@@ -19,7 +19,8 @@ public class GameState
         SaveSlot = saveSlot;
         Leagues.Add(new League(){
             Name = "League 1",
-            TeamAmount = 20
+            TeamAmount = 20,
+            SeasonStart = new DateTime(2024, 8, 17)
         });
         PlayerLeague = Leagues[0];
         CurrentDate = new DateTime(2024, 8, 1);

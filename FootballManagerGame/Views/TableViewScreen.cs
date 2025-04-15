@@ -43,18 +43,18 @@ public class TableViewScreen : Screen
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-        y = 100;
+        y = 70;
         spriteBatch.Begin();
-        spriteBatch.DrawString(_font, _gameState.LeagueSelected.Name, new Vector2(x, y - 30), Color.White);
-        spriteBatch.DrawString(_font, "Team", new Vector2(x, y + 60), Color.White);
-        spriteBatch.DrawString(_font, $"P", new Vector2(x + 300, y + 60), Color.White);
-        spriteBatch.DrawString(_font, $"W", new Vector2(x + 350, y + 60), Color.White);
-        spriteBatch.DrawString(_font, $"D", new Vector2(x + 400, y + 60), Color.White);
-        spriteBatch.DrawString(_font, $"L", new Vector2(x + 450, y + 60), Color.White);
-        spriteBatch.DrawString(_font, $"Pts", new Vector2(x + 500, y + 60), Color.White);
-        spriteBatch.DrawString(_font, $"GF", new Vector2(x + 550, y + 60), Color.White);
-        spriteBatch.DrawString(_font, $"GA", new Vector2(x + 600, y + 60), Color.White);
-        spriteBatch.DrawString(_font, $"+/-", new Vector2(x + 650, y + 60), Color.White);
+        spriteBatch.DrawString(_font, _gameState.LeagueSelected.Name, new Vector2(x, y - 20), Color.White);
+        spriteBatch.DrawString(_font, "Team", new Vector2(x, y + 30), Color.White);
+        spriteBatch.DrawString(_font, $"P", new Vector2(x + 300, y + 30), Color.White);
+        spriteBatch.DrawString(_font, $"W", new Vector2(x + 350, y + 30), Color.White);
+        spriteBatch.DrawString(_font, $"D", new Vector2(x + 400, y + 30), Color.White);
+        spriteBatch.DrawString(_font, $"L", new Vector2(x + 450, y + 30), Color.White);
+        spriteBatch.DrawString(_font, $"Pts", new Vector2(x + 500, y + 30), Color.White);
+        spriteBatch.DrawString(_font, $"GF", new Vector2(x + 550, y + 30), Color.White);
+        spriteBatch.DrawString(_font, $"GA", new Vector2(x + 600, y + 30), Color.White);
+        spriteBatch.DrawString(_font, $"+/-", new Vector2(x + 650, y + 30), Color.White);
         
         int i = 0;
         foreach (var team in TableList)
@@ -62,15 +62,16 @@ public class TableViewScreen : Screen
             Color color = (i == _selectionIndex) ? Color.Yellow : Color.White;
             if (team[0] == _gameState.PlayerTeam.Name){ color = Color.Cyan; }
 
-            spriteBatch.DrawString(_font, $"{team[0]}", new Vector2(x, y + 90), color);
-            spriteBatch.DrawString(_font, $"{team[1]}", new Vector2(x + 300, y + 90), color);
-            spriteBatch.DrawString(_font, $"{team[2]}", new Vector2(x + 350, y + 90), color);
-            spriteBatch.DrawString(_font, $"{team[3]}", new Vector2(x + 400, y + 90), color);
-            spriteBatch.DrawString(_font, $"{team[4]}", new Vector2(x + 450, y + 90), color);
-            spriteBatch.DrawString(_font, $"{team[5]}", new Vector2(x + 500, y + 90), color);
-            spriteBatch.DrawString(_font, $"{team[6]}", new Vector2(x + 550, y + 90), color);
-            spriteBatch.DrawString(_font, $"{team[7]}", new Vector2(x + 600, y + 90), color);
-            spriteBatch.DrawString(_font, $"{team[8]}", new Vector2(x + 650, y + 90), color);
+            spriteBatch.DrawString(_font, $"{i + 1}.", new Vector2(x - 60, y + 60), color);
+            spriteBatch.DrawString(_font, $"{team[0]}", new Vector2(x, y + 60), color);
+            spriteBatch.DrawString(_font, $"{team[1]}", new Vector2(x + 300, y + 60), color);
+            spriteBatch.DrawString(_font, $"{team[2]}", new Vector2(x + 350, y + 60), color);
+            spriteBatch.DrawString(_font, $"{team[3]}", new Vector2(x + 400, y + 60), color);
+            spriteBatch.DrawString(_font, $"{team[4]}", new Vector2(x + 450, y + 60), color);
+            spriteBatch.DrawString(_font, $"{team[5]}", new Vector2(x + 500, y + 60), color);
+            spriteBatch.DrawString(_font, $"{team[6]}", new Vector2(x + 550, y + 60), color);
+            spriteBatch.DrawString(_font, $"{team[7]}", new Vector2(x + 600, y + 60), color);
+            spriteBatch.DrawString(_font, $"{team[8]}", new Vector2(x + 650, y + 60), color);
     
             y += 30;
             i++;

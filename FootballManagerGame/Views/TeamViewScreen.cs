@@ -33,10 +33,37 @@ public class TeamViewScreen : Screen
     {
         spriteBatch.Begin();
         spriteBatch.DrawString(_font, "Team: " + _gameState.TeamSelected?.Name ?? "No Team Selected", new Vector2(100, 50), Color.White);
+
+        Color colorAVG = Color.White;
+        if (_gameState.TeamSelected.AvgAttack < 40) { colorAVG = Color.IndianRed; }
+        else if (_gameState.TeamSelected.AvgAttack < 60) { colorAVG = Color.Orange; }
+        else if (_gameState.TeamSelected.AvgAttack < 70) { colorAVG = Color.Yellow; }
+        else if (_gameState.TeamSelected.AvgAttack < 80) { colorAVG = Color.LightGreen; }
+        else if (_gameState.TeamSelected.AvgAttack < 90) { colorAVG = Color.SpringGreen; }
+        else { colorAVG = Color.Cyan; }
+        spriteBatch.DrawString(_font, $"Attack: {_gameState.TeamSelected.AvgAttack}", new Vector2(500, 50), colorAVG);
+
+        if (_gameState.TeamSelected.AvgMidfield < 40) { colorAVG = Color.IndianRed; }
+        else if (_gameState.TeamSelected.AvgMidfield < 60) { colorAVG = Color.Orange; }
+        else if (_gameState.TeamSelected.AvgMidfield < 70) { colorAVG = Color.Yellow; }
+        else if (_gameState.TeamSelected.AvgMidfield < 80) { colorAVG = Color.LightGreen; }
+        else if (_gameState.TeamSelected.AvgMidfield < 90) { colorAVG = Color.SpringGreen; }
+        else { colorAVG = Color.Cyan; }
+        spriteBatch.DrawString(_font, $"Midfield: {_gameState.TeamSelected.AvgMidfield}", new Vector2(700, 50), colorAVG);
+
+        if (_gameState.TeamSelected.AvgDefence < 40) { colorAVG = Color.IndianRed; }
+        else if (_gameState.TeamSelected.AvgDefence < 60) { colorAVG = Color.Orange; }
+        else if (_gameState.TeamSelected.AvgDefence < 70) { colorAVG = Color.Yellow; }
+        else if (_gameState.TeamSelected.AvgDefence < 80) { colorAVG = Color.LightGreen; }
+        else if (_gameState.TeamSelected.AvgDefence < 90) { colorAVG = Color.SpringGreen; }
+        else { colorAVG = Color.Cyan; }
+        spriteBatch.DrawString(_font, $"Defence: {_gameState.TeamSelected.AvgDefence}", new Vector2(900, 50), colorAVG);
+
+
         var orderedList = _gameState.TeamSelected.Players.OrderBy(p => p.Positions.First()).ToList();
         if (_gameState.TeamSelected != null)
         {
-            int y = 100;
+            int y = 130;
             for (int i = 0; i < orderedList.Count; i++)
             {
                 Color color = (i == _selectedPlayerIndex) ? Color.Yellow : Color.White;

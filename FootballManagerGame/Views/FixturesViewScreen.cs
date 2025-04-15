@@ -23,6 +23,18 @@ public class FixturesViewScreen : Screen
         _font = font;
         _graphics = graphics;
         _gameState = gameState;
+
+        for (int i = 0; i < _gameState.LeagueSelected.AllFixtures.Count; i++)
+        {
+            if (_gameState.LeagueSelected.AllFixtures[i][0].Date < _gameState.CurrentDate)
+            {
+                _selectionIndex = i + 1;
+            }
+            else
+            {
+                return;
+            }
+        }
     }
 
     public override void Update(GameTime gameTime)
@@ -33,22 +45,25 @@ public class FixturesViewScreen : Screen
     {
         spriteBatch.Begin();
         int x = 100;
-        int y = 100;
-        
-        spriteBatch.DrawString(_font, $"Matchday {_selectionIndex + 1}", new Vector2(x, y - 60), Color.White);
+        int y = 130;
+
+        spriteBatch.DrawString(_font, $"Matchday {_selectionIndex + 1}", new Vector2(x, y - 80), Color.White);
+        spriteBatch.DrawString(_font, $"{_gameState.LeagueSelected.AllFixtures[_selectionIndex][0].Date.Day} {_gameState.LeagueSelected.AllFixtures[_selectionIndex][0].Date.ToString("MMMM")} {_gameState.LeagueSelected.AllFixtures[_selectionIndex][0].Date.Year}", new Vector2(x + 300, y - 80), Color.White);
         foreach (Fixture fixture in _gameState.LeagueSelected.AllFixtures[_selectionIndex])
         {
             Color color1 = Color.White;
             Color color2 = Color.White;
-            if(fixture.Team1 == _gameState.PlayerTeam){ color1 = Color.Cyan;}
-            if(fixture.Team2 == _gameState.PlayerTeam){ color2 = Color.Cyan;}
+            if (fixture.Team1 == _gameState.PlayerTeam) { color1 = Color.Cyan; }
+            if (fixture.Team2 == _gameState.PlayerTeam) { color2 = Color.Cyan; }
 
-            if(fixture.Completed == false){
+            if (fixture.Completed == false)
+            {
                 spriteBatch.DrawString(_font, $"{fixture.Team1.Name}", new Vector2(x, y), color1);
                 spriteBatch.DrawString(_font, $"vs", new Vector2(x + 250, y), Color.White);
                 spriteBatch.DrawString(_font, $"{fixture.Team2.Name}", new Vector2(x + 350, y), color2);
             }
-            else{
+            else
+            {
                 spriteBatch.DrawString(_font, $"{fixture.Team1.Name}", new Vector2(x, y), color1);
                 spriteBatch.DrawString(_font, $"{fixture.Result[0]}:{fixture.Result[1]}", new Vector2(x + 250, y), Color.White);
                 spriteBatch.DrawString(_font, $"{fixture.Team2.Name}", new Vector2(x + 350, y), color2);
@@ -92,7 +107,8 @@ public class FixturesViewScreen : Screen
         {
         }
 
-        if (inputState.IsKeyPressed(Keys.Escape)){
+        if (inputState.IsKeyPressed(Keys.Escape))
+        {
             _gameState.LeagueSelected = null;
             ScreenManager.Instance.ChangeScreen("CareerMenu");
         }

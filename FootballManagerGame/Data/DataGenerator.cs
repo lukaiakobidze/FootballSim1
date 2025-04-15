@@ -25,58 +25,15 @@ public class DataGenerator
     }
 
     public static void SimFixture(Fixture fixture){
-        int attDiff = fixture.Team1.AvgAttack - fixture.Team2.AvgAttack;
-        int midDiff = fixture.Team1.AvgMidfield - fixture.Team2.AvgMidfield;
-        int defDiff = fixture.Team1.AvgDefence - fixture.Team2.AvgDefence;
-        int team1Score = 0;
-        int team2Score = 0;
-        int total = attDiff + midDiff + defDiff;
-    
-        int randomWin = Math.Max(Math.Min(_random.Next(100) + total * 2, 100), 0);
-        if(randomWin < 5){
-            team1Score = _random.Next(10);
-            team2Score = _random.Next(2);
-        }
-        else if(randomWin < 10){
-            team1Score = _random.Next(8);
-            team2Score = _random.Next(3);
-        }
-        else if(randomWin < 20){
-            team1Score = _random.Next(7);
-            team2Score = _random.Next(4);
-        }
-        else if(randomWin < 30){
-            team1Score = _random.Next(4);
-            team2Score = _random.Next(3);
-        }
-        else if(randomWin < 45){
-            team1Score = _random.Next(3);
-            team2Score = _random.Next(2);
-        }
-        else if(randomWin < 55){
-            team1Score = _random.Next(1);
-            team2Score = _random.Next(1);
-        }
-        else if(randomWin < 65){
-            team1Score = _random.Next(2);
-            team2Score = _random.Next(3);
-        }
-        else if(randomWin < 80){
-            team1Score = _random.Next(3);
-            team2Score = _random.Next(4);
-        }
-        else if(randomWin < 90){
-            team1Score = _random.Next(4);
-            team2Score = _random.Next(7);
-        }
-        else if(randomWin < 95){
-            team1Score = _random.Next(3);
-            team2Score = _random.Next(8);
-        }
-        else{
-            team1Score = _random.Next(2);
-            team2Score = _random.Next(10);
-        }
+        double team1Strength = Math.Pow(fixture.Team1.AvgAttack * 0.33 + fixture.Team1.AvgMidfield * 0.33 + fixture.Team1.AvgDefence * 0.33, 3);
+        double team2Strength = Math.Pow(fixture.Team2.AvgAttack * 0.33 + fixture.Team2.AvgMidfield * 0.33 + fixture.Team2.AvgDefence * 0.33, 3);
+
+
+        double ratio = team1Strength / (team1Strength + team2Strength);
+
+        int maxGoals = 8;
+        int team1Score = _random.Next((int)(ratio * maxGoals) + 1);
+        int team2Score = _random.Next((int)((1 - ratio) * maxGoals) + 1);
         fixture.SetResult(team1Score, team2Score);
     }
     public static Team GenerateTeam(string name, string nameShort)
