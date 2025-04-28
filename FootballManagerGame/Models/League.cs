@@ -17,7 +17,7 @@ public class League{
     public Dictionary<string, List<int>> Table { get; set; } = new Dictionary<string, List<int>>();
     public List<List<Fixture>> AllFixtures { get; set; } = new List<List<Fixture>>{ };
 
-    public League(){
+    public void InitializeNewLeague(){
         teams = DataGenerator.GenerateLeague(TeamAmount);
         foreach (Team team in teams)
         {
@@ -26,6 +26,7 @@ public class League{
            
         AllFixtures = GenerateFixtures(teams);
     }
+
 
     public List<List<Fixture>> GenerateFixtures(List<Team> teams)
     {

@@ -5,8 +5,12 @@
   <Config />
   <SourceFiles>
     <File>D:/CODING/C#/FootballSim/1/FootballManagerGame/Content/GameFont.spritefont</File>
+    <File>D:/CODING/C#/FootballSim/1/FootballManagerGame/Content/Shirt.png</File>
+    <File>D:/CODING/C#/FootballSim/1/FootballManagerGame/Content/stadium.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
   </DestFiles>
 </SourceFileCollection>

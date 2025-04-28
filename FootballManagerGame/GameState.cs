@@ -13,19 +13,6 @@ public class GameState
     {
         Leagues = new List<League>();
     }
-
-    public GameState(int saveSlot) : this()
-    {
-        SaveSlot = saveSlot;
-        Leagues.Add(new League(){
-            Name = "League 1",
-            TeamAmount = 20,
-            SeasonStart = new DateTime(2024, 8, 17)
-        });
-        PlayerLeague = Leagues[0];
-        CurrentDate = new DateTime(2024, 8, 1);
-        
-    }
     
     public Team PlayerTeam { get; set; }
     public League PlayerLeague { get; set; }
@@ -35,4 +22,18 @@ public class GameState
     public Team TeamSelected { get; set; }
     public League LeagueSelected { get; set; }
     public int SaveSlot { get; set; }
+
+    public void InitializeNewGame(int saveSlot)
+    {
+        SaveSlot = saveSlot;
+        Leagues.Add(new League()
+        {
+            Name = "League 1",
+            TeamAmount = 20,
+            SeasonStart = new DateTime(2024, 8, 17)
+        });
+        Leagues[0].InitializeNewLeague();
+        PlayerLeague = Leagues[0];
+        CurrentDate = new DateTime(2024, 8, 1);
+    }
 }

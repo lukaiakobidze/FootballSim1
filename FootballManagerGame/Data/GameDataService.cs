@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace FootballManagerGame.Data;
 
-using System.Text.Json;
+using Newtonsoft.Json;
 using System.IO;
 using System.Linq;
 
@@ -21,16 +21,18 @@ public class GameDataService
 
     public void SaveGame(GameState gameState, string saveName = "default")
     {
+        Console.WriteLine($"{gameState.PlayerLeague.teams.Count}");
         string saveFolder = Path.Combine(_saveDirectory, saveName);
         Directory.CreateDirectory(saveFolder);
 
-        var options = new JsonSerializerOptions
+        var settings = new JsonSerializerSettings
         {
-            WriteIndented = true,
-            ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve
+            TypeNameHandling = TypeNameHandling.Auto,
+            Formatting = Formatting.Indented,
+            PreserveReferencesHandling = PreserveReferencesHandling.Objects
         };
 
-        string gameStateJson = JsonSerializer.Serialize(gameState, options);
+        string gameStateJson = JsonConvert.SerializeObject(gameState, settings);
         File.WriteAllText(Path.Combine(saveFolder, GameStateFileName), gameStateJson);
     }
 
@@ -42,13 +44,17 @@ public class GameDataService
         if (!File.Exists(gameStateFile))
             return null;
 
-        var options = new JsonSerializerOptions
+        var settings = new JsonSerializerSettings
         {
-            ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve
+            TypeNameHandling = TypeNameHandling.Auto,
+            Formatting = Formatting.Indented,
+            PreserveReferencesHandling = PreserveReferencesHandling.Objects
         };
 
         string gameStateJson = File.ReadAllText(gameStateFile);
-        return JsonSerializer.Deserialize<GameState>(gameStateJson, options);
+        GameState gameState = JsonConvert.DeserializeObject<GameState>(gameStateJson, settings);
+        
+        return gameState;
     }
 
     public List<string> GetSaveGames()

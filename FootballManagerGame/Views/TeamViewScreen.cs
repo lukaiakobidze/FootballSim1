@@ -112,7 +112,7 @@ public class TeamViewScreen : Screen
         {
             var orderedList = _gameState.TeamSelected.Players.OrderBy(p => p.Positions.First()).ToList();
             _gameState.PlayerSelected = orderedList[_selectedPlayerIndex];
-            ScreenManager.Instance.AddScreen("PlayerView", new PlayerViewScreen(_gameState, _font, orderedList[_selectedPlayerIndex]));
+            ScreenManager.Instance.AddScreen("PlayerView", new PlayerViewScreen(_gameState, _font, orderedList[_selectedPlayerIndex], "TeamView"));
             ScreenManager.Instance.ChangeScreen("PlayerView");
 
         }

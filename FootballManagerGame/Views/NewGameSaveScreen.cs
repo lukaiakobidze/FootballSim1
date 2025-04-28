@@ -7,6 +7,7 @@ using FootballManagerGame.Input;
 using FootballManagerGame.Data;
 using System.Collections.Generic;
 using FootballManagerGame.Models;
+using FootballManagerGame.Helpers;
 
 namespace FootballManagerGame.Views;
 
@@ -14,16 +15,20 @@ public class NewGameSaveScreen : Screen
 {
     private SpriteFont _font;
     private GraphicsDeviceManager _graphics;
+    private ShapeDrawer _shapes;
     private GameDataService _gameDataService;
+    private List<Texture2D> _textures;
     private List<GameState> _gameStates = new List<GameState>();
     private int _saveAmount = 5;
     private int _selectionIndex = 0;
 
-    public NewGameSaveScreen(SpriteFont font, GraphicsDeviceManager graphics, GameDataService gameDataService)
+    public NewGameSaveScreen(SpriteFont font, GraphicsDeviceManager graphics, GameDataService gameDataService, ShapeDrawer shapes, List<Texture2D> textures)
     {
         _font = font;
         _graphics = graphics;
         _gameDataService = gameDataService;
+        _shapes = shapes;
+        _textures = textures;
         if(_gameDataService.GetSaveGames() != null){
             foreach (string save in _gameDataService.GetSaveGames()){
                 _gameStates.Add(_gameDataService.LoadGame(save));
@@ -85,8 +90,9 @@ public class NewGameSaveScreen : Screen
 
         if (inputState.IsKeyPressed(Keys.Enter))
         {
-            GameState gameState = new GameState(_selectionIndex + 1);
-            ScreenManager.Instance.AddScreen("NewGame", new NewGameScreen(gameState, _font, _graphics, _gameDataService, _selectionIndex + 1));
+            GameState gameState = new GameState();
+            gameState.InitializeNewGame(_selectionIndex + 1);
+            ScreenManager.Instance.AddScreen("NewGame", new NewGameScreen(gameState, _font, _graphics, _gameDataService, _shapes, _textures, _selectionIndex + 1));
             ScreenManager.Instance.ChangeScreen("NewGame");
         }
 

@@ -9,6 +9,19 @@
           "build/MonoGame.Content.Builder.Task.targets": {}
         }
       },
+      "MonoGame.Extended/4.0.4": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/MonoGame.Extended.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/MonoGame.Extended.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "MonoGame.Framework.DesktopGL/3.8.3": {
         "type": "package",
         "dependencies": {
@@ -92,6 +105,19 @@
           }
         }
       },
+      "Newtonsoft.Json/13.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/Newtonsoft.Json.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/Newtonsoft.Json.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "NVorbis/0.10.4": {
         "type": "package",
         "dependencies": {
@@ -143,6 +169,21 @@
         "build/MonoGame.Content.Builder.Task.targets",
         "monogame.content.builder.task.3.8.3.nupkg.sha512",
         "monogame.content.builder.task.nuspec"
+      ]
+    },
+    "MonoGame.Extended/4.0.4": {
+      "sha512": "4CXSHzChnp72GXZo/RoK+iKL7nm1X1XI6uer/osbSjyT+YGhXwnta6+P5+ZnwNp+NyeZtYuN+q/9L98pJgYCHQ==",
+      "type": "package",
+      "path": "monogame.extended/4.0.4",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "lib/net8.0/MonoGame.Extended.dll",
+        "lib/net8.0/MonoGame.Extended.xml",
+        "logo-nuget-128.png",
+        "monogame.extended.4.0.4.nupkg.sha512",
+        "monogame.extended.nuspec"
       ]
     },
     "MonoGame.Framework.DesktopGL/3.8.3": {
@@ -200,6 +241,36 @@
         "runtimes/linux-x64/native/libSDL2-2.0.so.0",
         "runtimes/osx/native/libSDL2-2.0.0.dylib",
         "runtimes/win-x64/native/SDL2.dll"
+      ]
+    },
+    "Newtonsoft.Json/13.0.3": {
+      "sha512": "HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ==",
+      "type": "package",
+      "path": "newtonsoft.json/13.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.md",
+        "README.md",
+        "lib/net20/Newtonsoft.Json.dll",
+        "lib/net20/Newtonsoft.Json.xml",
+        "lib/net35/Newtonsoft.Json.dll",
+        "lib/net35/Newtonsoft.Json.xml",
+        "lib/net40/Newtonsoft.Json.dll",
+        "lib/net40/Newtonsoft.Json.xml",
+        "lib/net45/Newtonsoft.Json.dll",
+        "lib/net45/Newtonsoft.Json.xml",
+        "lib/net6.0/Newtonsoft.Json.dll",
+        "lib/net6.0/Newtonsoft.Json.xml",
+        "lib/netstandard1.0/Newtonsoft.Json.dll",
+        "lib/netstandard1.0/Newtonsoft.Json.xml",
+        "lib/netstandard1.3/Newtonsoft.Json.dll",
+        "lib/netstandard1.3/Newtonsoft.Json.xml",
+        "lib/netstandard2.0/Newtonsoft.Json.dll",
+        "lib/netstandard2.0/Newtonsoft.Json.xml",
+        "newtonsoft.json.13.0.3.nupkg.sha512",
+        "newtonsoft.json.nuspec",
+        "packageIcon.png"
       ]
     },
     "NVorbis/0.10.4": {
@@ -287,7 +358,9 @@
   "projectFileDependencyGroups": {
     "net8.0": [
       "MonoGame.Content.Builder.Task >= 3.8.*",
-      "MonoGame.Framework.DesktopGL >= 3.8.*"
+      "MonoGame.Extended >= 4.0.4",
+      "MonoGame.Framework.DesktopGL >= 3.8.*",
+      "Newtonsoft.Json >= 13.0.3"
     ]
   },
   "packageFolders": {
@@ -344,9 +417,17 @@
             "target": "Package",
             "version": "[3.8.*, )"
           },
+          "MonoGame.Extended": {
+            "target": "Package",
+            "version": "[4.0.4, )"
+          },
           "MonoGame.Framework.DesktopGL": {
             "target": "Package",
             "version": "[3.8.*, )"
+          },
+          "Newtonsoft.Json": {
+            "target": "Package",
+            "version": "[13.0.3, )"
           }
         },
         "imports": [

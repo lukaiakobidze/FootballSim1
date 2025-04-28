@@ -7,6 +7,7 @@ using FootballManagerGame.Input;
 using System.Collections.Generic;
 using FootballManagerGame.Data;
 using FootballManagerGame.Models;
+using FootballManagerGame.Helpers;
 
 namespace FootballManagerGame.Views;
 
@@ -14,14 +15,18 @@ public class MainMenuScreen : Screen
 {
     private SpriteFont _font;
     private GraphicsDeviceManager _graphics;
+    private ShapeDrawer _shapes;
     private GameDataService _gameDataService;
+    private List<Texture2D> _textures;
     private int _selectionIndex = 0;
     private List<string> _strings;
-    public MainMenuScreen(SpriteFont font, GraphicsDeviceManager graphics, GameDataService gameDataService)
+    public MainMenuScreen(SpriteFont font, GraphicsDeviceManager graphics, GameDataService gameDataService, ShapeDrawer shapes, List<Texture2D> textures)
     {
         _font = font;
         _graphics = graphics;
         _gameDataService = gameDataService;
+        _shapes = shapes;
+        _textures = textures;
         _strings = new List<string>() {"New Game", "Load Game", "Exit"};
     }
 
@@ -72,11 +77,11 @@ public class MainMenuScreen : Screen
         {
             if (_selectionIndex == 0)
             {
-                ScreenManager.Instance.AddScreen("NewGameSave", new NewGameSaveScreen(_font, _graphics, _gameDataService));
+                ScreenManager.Instance.AddScreen("NewGameSave", new NewGameSaveScreen(_font, _graphics, _gameDataService, _shapes, _textures));
                 ScreenManager.Instance.ChangeScreen("NewGameSave");
             }
             else if (_selectionIndex == 1){
-                ScreenManager.Instance.AddScreen("LoadGameSave", new LoadGameSaveScreen(_font, _graphics, _gameDataService));
+                ScreenManager.Instance.AddScreen("LoadGameSave", new LoadGameSaveScreen(_font, _graphics, _gameDataService, _shapes, _textures));
                 ScreenManager.Instance.ChangeScreen("LoadGameSave");
             }
             else if (_selectionIndex == _strings.Count - 1)

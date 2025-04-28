@@ -31,3 +31,7 @@ D:\CODING\C#\FootballSim\1\FootballManagerGame\obj\Debug\net8.0\FootballManagerG
 D:\CODING\C#\FootballSim\1\FootballManagerGame\obj\Debug\net8.0\FootballManagerGame.genruntimeconfig.cache
 D:\CODING\C#\FootballSim\1\FootballManagerGame\obj\Debug\net8.0\ref\FootballManagerGame.dll
 d:\CODING\C#\FootballSim\1\FootballManagerGame\obj\Debug\net8.0\FootballManagerGame.sourcelink.json
+d:\CODING\C#\FootballSim\1\FootballManagerGame\bin\Debug\net8.0\MonoGame.Extended.dll
+d:\CODING\C#\FootballSim\1\FootballManagerGame\bin\Debug\net8.0\Content\Shirt.xnb
+D:\CODING\C#\FootballSim\1\FootballManagerGame\bin\Debug\net8.0\Content\stadium.xnb
+D:\CODING\C#\FootballSim\1\FootballManagerGame\bin\Debug\net8.0\Newtonsoft.Json.dll

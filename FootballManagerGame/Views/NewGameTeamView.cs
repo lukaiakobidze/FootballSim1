@@ -8,6 +8,7 @@ using FootballManagerGame.Models;
 using System.Linq;
 using System.Collections.Generic;
 using FootballManagerGame.Data;
+using FootballManagerGame.Helpers;
 namespace FootballManagerGame.Views;
 
 
@@ -16,17 +17,21 @@ public class NewGameTeamViewScreen : Screen
     private GameState _gameState;
     private SpriteFont _font;
     private GraphicsDeviceManager _graphics;
+    private ShapeDrawer _shapes;
     private GameDataService _gameDataService;
+    private List<Texture2D> _textures;
     private int _saveSlot;
     private int _selectedPlayerIndex = 0;
 
 
-    public NewGameTeamViewScreen(GameState gameState, SpriteFont font, GraphicsDeviceManager graphics, GameDataService gameDataService, int saveSlot)
+    public NewGameTeamViewScreen(GameState gameState, SpriteFont font, GraphicsDeviceManager graphics, GameDataService gameDataService, ShapeDrawer shapes, List<Texture2D> textures, int saveSlot)
     {
         _gameState = gameState;
         _font = font;
         _graphics = graphics;
         _gameDataService = gameDataService;
+        _shapes = shapes;
+        _textures = textures;
         _saveSlot = saveSlot;
     }
 
@@ -101,7 +106,7 @@ public class NewGameTeamViewScreen : Screen
         {
             _gameState.PlayerTeam = _gameState.TeamSelected;
             _gameDataService.SaveGame(_gameState, $"Save{_saveSlot}");
-            ScreenManager.Instance.AddScreen("CareerMenu", new CareerMenuScreen(_font, _graphics, _gameDataService, _gameState));
+            ScreenManager.Instance.AddScreen("CareerMenu", new CareerMenuScreen(_font, _graphics, _gameDataService, _gameState, _shapes, _textures));
             ScreenManager.Instance.ChangeScreen("CareerMenu");
         }
 

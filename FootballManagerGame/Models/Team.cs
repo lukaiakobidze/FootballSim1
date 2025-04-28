@@ -13,6 +13,7 @@ public class Team
     public int AvgAttack { get; set; }
     public int AvgMidfield { get; set; }
     public int AvgDefence { get; set; }
+    public Formation CurrentFormation { get; set; } = new FourFourTwoFormation();
 
     public void CalcAvg(){
         float att = 0;

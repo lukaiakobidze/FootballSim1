@@ -106,7 +106,7 @@ public class DataGenerator
 
             do
             {
-                primaryPosition = (PlayerPositions)_random.Next(Enum.GetValues(typeof(PlayerPositions)).Length);
+                primaryPosition = (PlayerPositions)_random.Next(Enum.GetValues(typeof(PlayerPositions)).Length - 10);
             }
             while (primaryPosition == PlayerPositions.NONE);
             player.Positions.Add(primaryPosition);
@@ -122,7 +122,7 @@ public class DataGenerator
         {
             do
             {
-                secondaryPosition = (PlayerPositions)_random.Next(Enum.GetValues(typeof(PlayerPositions)).Length);
+                secondaryPosition = (PlayerPositions)_random.Next(Enum.GetValues(typeof(PlayerPositions)).Length - 10);
             } while (secondaryPosition == primaryPosition || secondaryPosition == PlayerPositions.GK || secondaryPosition == PlayerPositions.NONE);
 
             player.Positions.Add(secondaryPosition);
@@ -227,38 +227,55 @@ public class DataGenerator
         switch (position)
         {
             case PlayerPositions.GK:
-                return attribute == Attributes.Reflexes || attribute == Attributes.Diving || attribute == Attributes.Sweeping || attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing || attribute == Attributes.Vision;
+                return attribute == Attributes.Reflexes || attribute == Attributes.Diving || attribute == Attributes.Sweeping || 
+                attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing || attribute == Attributes.Vision;
 
             case PlayerPositions.CB:
-                return attribute == Attributes.Sliding || attribute == Attributes.Tackling || attribute == Attributes.Strength || attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing;
+            case PlayerPositions.LCB:
+            case PlayerPositions.RCB:
+                return attribute == Attributes.Sliding || attribute == Attributes.Tackling || attribute == Attributes.Strength || 
+                attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing;
             case PlayerPositions.LB:
             case PlayerPositions.RB:
-                return attribute == Attributes.Sliding || attribute == Attributes.Tackling || attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing || attribute == Attributes.Crossing;
+                return attribute == Attributes.Sliding || attribute == Attributes.Tackling || attribute == Attributes.ShortPassing || 
+                attribute == Attributes.LongPassing || attribute == Attributes.Crossing;
 
             case PlayerPositions.CDM:
-                return attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing || attribute == Attributes.LongShooting || attribute == Attributes.Tackling || attribute == Attributes.Sliding || attribute == Attributes.Strength;
+            case PlayerPositions.LDM:
+            case PlayerPositions.RDM:
+                return attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing || attribute == Attributes.LongShooting || 
+                attribute == Attributes.Tackling || attribute == Attributes.Sliding || attribute == Attributes.Strength;
             case PlayerPositions.CM:
-                return attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing || attribute == Attributes.LongShooting || attribute == Attributes.BallControl || attribute == Attributes.Dribbling || attribute == Attributes.Vision;
-
+            case PlayerPositions.LCM:
+            case PlayerPositions.RCM:
+                return attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing || attribute == Attributes.LongShooting || 
+                attribute == Attributes.BallControl || attribute == Attributes.Dribbling || attribute == Attributes.Vision;
             case PlayerPositions.CAM:
-                return attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing || attribute == Attributes.Vision || attribute == Attributes.Dribbling || attribute == Attributes.BallControl || attribute == Attributes.LongShooting;
+            case PlayerPositions.LAM:
+            case PlayerPositions.RAM:
+                return attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing || attribute == Attributes.Vision || 
+                attribute == Attributes.Dribbling || attribute == Attributes.BallControl || attribute == Attributes.LongShooting;
             case PlayerPositions.LM:
             case PlayerPositions.RM:
-                return attribute == Attributes.Crossing || attribute == Attributes.Vision || attribute == Attributes.Dribbling || attribute == Attributes.BallControl || attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing;
+                return attribute == Attributes.Crossing || attribute == Attributes.Vision || attribute == Attributes.Dribbling || 
+                attribute == Attributes.BallControl || attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing;
             case PlayerPositions.LWB:
             case PlayerPositions.RWB:
-                return attribute == Attributes.Tackling || attribute == Attributes.Crossing || attribute == Attributes.Vision || attribute == Attributes.Dribbling || attribute == Attributes.BallControl || attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing;
-
+                return attribute == Attributes.Tackling || attribute == Attributes.Crossing || attribute == Attributes.Vision || 
+                attribute == Attributes.Dribbling || attribute == Attributes.BallControl || attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing;
             case PlayerPositions.LW:
             case PlayerPositions.RW:
-                return attribute == Attributes.Crossing || attribute == Attributes.Dribbling || attribute == Attributes.BallControl || attribute == Attributes.Vision || attribute == Attributes.Finishing || attribute == Attributes.LongShooting || attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing;
-
+                return attribute == Attributes.Crossing || attribute == Attributes.Dribbling || attribute == Attributes.BallControl || 
+                attribute == Attributes.Vision || attribute == Attributes.Finishing || attribute == Attributes.LongShooting || 
+                attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing;
             case PlayerPositions.ST:
-                return attribute == Attributes.Finishing || attribute == Attributes.LongShooting || attribute == Attributes.Dribbling || attribute == Attributes.BallControl;
+                return attribute == Attributes.Finishing || attribute == Attributes.LongShooting || attribute == Attributes.Dribbling || 
+                attribute == Attributes.BallControl;
             case PlayerPositions.CF:
             case PlayerPositions.LF:
             case PlayerPositions.RF:
-                return attribute == Attributes.Finishing || attribute == Attributes.LongShooting || attribute == Attributes.Dribbling || attribute == Attributes.BallControl || attribute == Attributes.Vision || attribute == Attributes.ShortPassing;
+                return attribute == Attributes.Finishing || attribute == Attributes.LongShooting || attribute == Attributes.Dribbling || 
+                attribute == Attributes.BallControl || attribute == Attributes.Vision || attribute == Attributes.ShortPassing;
 
             default:
                 return false;

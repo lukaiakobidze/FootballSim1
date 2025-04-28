@@ -7,6 +7,7 @@ using FootballManagerGame.Input;
 using FootballManagerGame.Data;
 using System.Collections.Generic;
 using FootballManagerGame.Models;
+using FootballManagerGame.Helpers;
 
 namespace FootballManagerGame.Views;
 
@@ -14,17 +15,22 @@ public class LoadGameSaveScreen : Screen
 {
     private SpriteFont _font;
     private GraphicsDeviceManager _graphics;
+    private ShapeDrawer _shapes;
     private GameDataService _gameDataService;
+    private List<Texture2D> _textures;
     private List<GameState> _gameStates = new List<GameState>();
     private bool _error = false;
     private int _saveAmount = 5;
     private int _selectionIndex = 0;
 
-    public LoadGameSaveScreen(SpriteFont font, GraphicsDeviceManager graphics, GameDataService gameDataService)
+    public LoadGameSaveScreen(SpriteFont font, GraphicsDeviceManager graphics, GameDataService gameDataService, ShapeDrawer shapes, List<Texture2D> textures)
     {
         _font = font;
         _graphics = graphics;
         _gameDataService = gameDataService;
+        _shapes = shapes;
+        _textures = textures;
+        
         if(_gameDataService.GetSaveGames() != null){
             foreach (string save in _gameDataService.GetSaveGames()){
                 _gameStates.Add(_gameDataService.LoadGame(save));
@@ -97,8 +103,10 @@ public class LoadGameSaveScreen : Screen
         {
             if (_gameDataService.GetSaveGames().Contains($"Save{_selectionIndex + 1}")){
                 GameState gameState = _gameDataService.LoadGame($"Save{_selectionIndex + 1}");
-                ScreenManager.Instance.AddScreen("CareerMenu", new CareerMenuScreen(_font, _graphics, _gameDataService, gameState));
+                Console.WriteLine($"{gameState.PlayerLeague.teams.Count}");
+                ScreenManager.Instance.AddScreen("CareerMenu", new CareerMenuScreen(_font, _graphics, _gameDataService, gameState, _shapes, _textures));
                 ScreenManager.Instance.ChangeScreen("CareerMenu");
+                
             }
             else{
                 _error = true;
