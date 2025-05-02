@@ -9,15 +9,15 @@ public enum PlayerPositions
     LWB,
     RB,
     RWB,
-    CM,
     CDM,
+    CM,
     CAM,
     LM,
     LW,
     RM,
     RW,
+    F9,
     CF,
-    ST,
 
 
 

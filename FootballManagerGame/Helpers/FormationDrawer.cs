@@ -1,3 +1,5 @@
+using FootballManagerGame.Enums;
+using FootballManagerGame.Models;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -7,41 +9,46 @@ namespace FootballManagerGame.Helpers;
 
 public class FormationDrawer
 {
-    public static void DrawFormation(string formation, Rectangle area, SpriteBatch spriteBatch, List<Texture2D> textures, GraphicsDeviceManager graphics, SpriteFont font)
+    public static Dictionary<PlayerPositions, Vector2> PositionCords = new Dictionary<PlayerPositions, Vector2>{
+        {PlayerPositions.GK, new Vector2(300,100)},
+        {PlayerPositions.CB, new Vector2(300,200)},
+        {PlayerPositions.LCB, new Vector2(200,200)},
+        {PlayerPositions.RCB, new Vector2(400,200)},
+        {PlayerPositions.LB, new Vector2(100,220)},
+        {PlayerPositions.LWB, new Vector2(100,300)},
+        {PlayerPositions.RB, new Vector2(500,220)},
+        {PlayerPositions.RWB, new Vector2(500,300)},
+        {PlayerPositions.CDM, new Vector2(300,300)},
+        {PlayerPositions.LDM, new Vector2(200,300)},
+        {PlayerPositions.RDM, new Vector2(400,300)},
+        {PlayerPositions.CM, new Vector2(300,400)},
+        {PlayerPositions.LCM, new Vector2(200,400)},
+        {PlayerPositions.RCM, new Vector2(400,400)},
+        {PlayerPositions.CAM, new Vector2(300,500)},
+        {PlayerPositions.LAM, new Vector2(200,500)},
+        {PlayerPositions.RAM, new Vector2(400,500)},
+        {PlayerPositions.LM, new Vector2(100,450)},
+        {PlayerPositions.RM, new Vector2(500,450)},
+        {PlayerPositions.LW, new Vector2(140,600)},
+        {PlayerPositions.RW, new Vector2(460,600)},
+        {PlayerPositions.F9, new Vector2(300,575)},
+        {PlayerPositions.LF, new Vector2(200,650)},
+        {PlayerPositions.RF, new Vector2(400,650)},
+        {PlayerPositions.CF, new Vector2(300,650)} };
+
+    private static Color txtColor = new Color(5, 7, 18);
+
+    public static void DrawFormation(Formation formation, Vector2 origin, float size, SpriteBatch spriteBatch, List<Texture2D> textures, GraphicsDeviceManager graphics, SpriteFont font)
     {
+
+        Rectangle area = new Rectangle((int)(origin.X), (int)(origin.Y), (int)(600*size), (int)(800*size));
+
         spriteBatch.Draw(textures[1], area, Color.White);
         
-        if (formation == "442")
-        {
-            spriteBatch.Draw(textures[0], new Rectangle(area.X + 250 - 32, area.Y + area.Height - 100 - 32, 64, 64), Color.White);
-            spriteBatch.DrawString(font, $"GK", new Vector2(area.X + 250, area.Y + area.Height - 60), Color.White, 0f, font.MeasureString("GK") / 2, 1f, SpriteEffects.None, 0f);
-
-            spriteBatch.Draw(textures[0], new Rectangle(area.X + 100 - 32, area.Y + area.Height - 200 - 32, 64, 64), Color.White);
-            spriteBatch.DrawString(font, $"LB", new Vector2(area.X + 100, area.Y + area.Height - 160), Color.White, 0f, font.MeasureString("LB") / 2, 1f, SpriteEffects.None, 0f);
-            spriteBatch.Draw(textures[0], new Rectangle(area.X + 200 - 32, area.Y + area.Height - 200 - 32, 64, 64), Color.White);
-            spriteBatch.DrawString(font, $"LCB", new Vector2(area.X + 200, area.Y + area.Height - 160), Color.White, 0f, font.MeasureString("LCB") / 2, 1f, SpriteEffects.None, 0f);
-            spriteBatch.Draw(textures[0], new Rectangle(area.X + 300 - 32, area.Y + area.Height - 200 - 32, 64, 64), Color.White);
-            spriteBatch.DrawString(font, $"RCB", new Vector2(area.X + 300, area.Y + area.Height - 160), Color.White, 0f, font.MeasureString("RCB") / 2, 1f, SpriteEffects.None, 0f);
-            spriteBatch.Draw(textures[0], new Rectangle(area.X + 400 - 32, area.Y + area.Height - 200 - 32, 64, 64), Color.White);
-            spriteBatch.DrawString(font, $"RB", new Vector2(area.X + 400, area.Y + area.Height - 160), Color.White, 0f, font.MeasureString("RB") / 2, 1f, SpriteEffects.None, 0f);
-
-            spriteBatch.Draw(textures[0], new Rectangle(area.X + 100 - 32, area.Y + area.Height - 350 - 32, 64, 64), Color.White);
-            spriteBatch.DrawString(font, $"LM", new Vector2(area.X + 100, area.Y + area.Height - 310), Color.White, 0f, font.MeasureString("LM") / 2, 1f, SpriteEffects.None, 0f);
-            spriteBatch.Draw(textures[0], new Rectangle(area.X + 200 - 32, area.Y + area.Height - 350 - 32, 64, 64), Color.White);
-            spriteBatch.DrawString(font, $"LCM", new Vector2(area.X + 200, area.Y + area.Height - 310), Color.White, 0f, font.MeasureString("LCM") / 2, 1f, SpriteEffects.None, 0f);
-            spriteBatch.Draw(textures[0], new Rectangle(area.X + 300 - 32, area.Y + area.Height - 350 - 32, 64, 64), Color.White);
-            spriteBatch.DrawString(font, $"RCM", new Vector2(area.X + 300, area.Y + area.Height - 310), Color.White, 0f, font.MeasureString("RCM") / 2, 1f, SpriteEffects.None, 0f);
-            spriteBatch.Draw(textures[0], new Rectangle(area.X + 400 - 32, area.Y + area.Height - 350 - 32, 64, 64), Color.White);
-            spriteBatch.DrawString(font, $"RM", new Vector2(area.X + 400, area.Y + area.Height - 310), Color.White, 0f, font.MeasureString("RM") / 2, 1f, SpriteEffects.None, 0f);
-
-            spriteBatch.Draw(textures[0], new Rectangle(area.X + 200 - 32, area.Y + area.Height - 500 - 32, 64, 64), Color.White);
-            spriteBatch.DrawString(font, $"LF", new Vector2(area.X + 200, area.Y + area.Height - 460), Color.White, 0f, font.MeasureString("LF") / 2, 1f, SpriteEffects.None, 0f);
-            spriteBatch.Draw(textures[0], new Rectangle(area.X + 300 - 32, area.Y + area.Height - 500 - 32, 64, 64), Color.White);
-            spriteBatch.DrawString(font, $"RF", new Vector2(area.X + 300, area.Y + area.Height - 460), Color.White, 0f, font.MeasureString("RF") / 2, 1f, SpriteEffects.None, 0f);
+        foreach (var position in formation.Positions){
+            spriteBatch.Draw(textures[0], new Rectangle((int)(area.X + PositionCords[position].X - 45 * size), (int)(area.Y + area.Height - PositionCords[position].Y - 45 * size),(int)( 90 * size), (int)( 90 * size)), Color.White);
+            spriteBatch.DrawString(font, $"{position}", new Vector2((int)(area.X + PositionCords[position].X), (int)(area.Y + area.Height - PositionCords[position].Y)), txtColor, 0f, font.MeasureString($"{position}") / 2, 0.85f * size, SpriteEffects.None, 0f);
         }
-
     }
-
-
-
 }
+

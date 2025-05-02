@@ -40,7 +40,7 @@ public class Team
 
         i = 0;
         foreach (Player player in Players){
-            if (player.PrimaryPosition == PlayerPositions.LW || player.PrimaryPosition == PlayerPositions.RW || player.PrimaryPosition == PlayerPositions.LF || player.PrimaryPosition == PlayerPositions.RF || player.PrimaryPosition == PlayerPositions.ST || player.PrimaryPosition == PlayerPositions.CF){
+            if (player.PrimaryPosition == PlayerPositions.LW || player.PrimaryPosition == PlayerPositions.RW || player.PrimaryPosition == PlayerPositions.LF || player.PrimaryPosition == PlayerPositions.RF || player.PrimaryPosition == PlayerPositions.F9 || player.PrimaryPosition == PlayerPositions.CF){
                 att += player.Overall;
                 i++;
             }

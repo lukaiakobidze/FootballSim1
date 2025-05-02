@@ -20,9 +20,12 @@ public class TeamStrategyScreen : Screen
     private List<Texture2D> _textures;
     private int _selectionIndex = 0;
     private int _selectedPlayerIndex = 0;
+    private int _selectedFormationIndex = 0;
     private bool _showPlayers = false;
+    private bool _showFormations = false;
     private List<string> _strings;
-    
+    private List<string> _formations;
+
 
     public TeamStrategyScreen(GameState gameState, SpriteFont font, GraphicsDeviceManager graphics, ShapeDrawer shapes, List<Texture2D> textures)
     {
@@ -30,8 +33,10 @@ public class TeamStrategyScreen : Screen
         _gameState = gameState;
         _font = font;
         _shapes = shapes;
-        _textures = textures;   
-        _strings = new List<string>() {"Change formation", "Change players"};
+        _textures = textures;
+        _strings = new List<string>() { "Change formation", "Change players" };
+        _formations = new List<string>() { "4-4-2", "4-4-1-1", "4-3-3", "4-3-3 Attacking", "4-3-3 Defensive", "4-2-1-2-1", "4-1-2-1-2", "4-5-1", "5-3-2", "5-2-1-2", "5-4-1", "3-4-3", "3-4-1-2"};
+
     }
 
     public override void Update(GameTime gameTime)
@@ -43,9 +48,10 @@ public class TeamStrategyScreen : Screen
         spriteBatch.Begin();
         if (_gameState.TeamSelected != null)
         {
-            spriteBatch.DrawString(_font, "Team: " + _gameState.TeamSelected?.Name ?? "No Team Selected", new Vector2(100, 50), Color.White);
+            spriteBatch.DrawString(_font, _gameState.TeamSelected?.Name ?? "No Team Selected", new Vector2(100, 50), Color.White);
 
-            if(_showPlayers){
+            if (_showPlayers)
+            {
                 var orderedList = _gameState.TeamSelected.Players.OrderBy(p => p.Positions.First()).ThenBy(p => p.Overall).ToList();
                 int y = 130;
                 for (int i = 0; i < orderedList.Count; i++)
@@ -65,33 +71,157 @@ public class TeamStrategyScreen : Screen
                     y += 30;
                 }
             }
+            else if(_showFormations){
+                int y = 130;
+                for (int i = 0; i < _formations.Count; i++)
+                {
+                    Color color = (i == _selectedFormationIndex) ? Color.Yellow : Color.White;
+
+                    spriteBatch.DrawString(_font, $"{_formations[i]}", new Vector2(100, y), color);
+
+                    y += 30;
+                }
+
+            }
             else
             {
                 for (int i = 0; i < _strings.Count; i++)
                 {
                     Color color = (i == _selectionIndex) ? Color.Yellow : Color.White;
-                    spriteBatch.DrawString(_font, _strings[i], new Vector2(100, 100 + i * 30), color);
+                    spriteBatch.DrawString(_font, _strings[i], new Vector2(100, 130 + i * 30), color);
                 }
             }
-            
 
-
-
-            FormationDrawer.DrawFormation(_gameState.TeamSelected.CurrentFormation.Name, new Rectangle(_graphics.GraphicsDevice.Viewport.Width-600, 100, 500, 700), spriteBatch, _textures, _graphics, _font);
-
-
-
-
+            spriteBatch.DrawString(_font, _gameState.TeamSelected.CurrentFormation.Name, new Vector2(_graphics.GraphicsDevice.Viewport.Width - 300, 100), Color.White, 0f, _font.MeasureString(_gameState.TeamSelected.CurrentFormation.Name) / 2, 1.25f, SpriteEffects.None, 0f);
+            FormationDrawer.DrawFormation(_gameState.TeamSelected.CurrentFormation, new Vector2(_graphics.GraphicsDevice.Viewport.Width - 600, 100), 1, spriteBatch, _textures, _graphics, _font);
 
         }
-
         spriteBatch.End();
     }
 
     public override void HandleInput(InputState inputState)
     {
-        if(_showPlayers == false){
+        if (_showPlayers)
+        {
+            if (inputState.IsKeyPressed(Keys.Up))
+            {
+                if (_selectedPlayerIndex == 0)
+                {
+                    _selectedPlayerIndex = _gameState.TeamSelected.Players.Count - 1;
+                }
+                else
+                {
+                    _selectedPlayerIndex = Math.Max(0, _selectedPlayerIndex - 1);
+                }
+            }
 
+            if (inputState.IsKeyPressed(Keys.Down))
+            {
+                if (_selectedPlayerIndex == _gameState.TeamSelected.Players.Count - 1)
+                {
+                    _selectedPlayerIndex = 0;
+                }
+                else
+                {
+                    _selectedPlayerIndex = Math.Min(_gameState.TeamSelected.Players.Count - 1, _selectedPlayerIndex + 1);
+                }
+            }
+            if (inputState.IsKeyPressed(Keys.Enter))
+            {
+                var orderedList = _gameState.TeamSelected.Players.OrderBy(p => p.Positions.First()).ToList();
+                _gameState.PlayerSelected = orderedList[_selectedPlayerIndex];
+                ScreenManager.Instance.AddScreen("PlayerView", new PlayerViewScreen(_gameState, _font, orderedList[_selectedPlayerIndex], "TeamStrategyView"));
+                ScreenManager.Instance.ChangeScreen("PlayerView");
+
+            }
+            if (inputState.IsKeyPressed(Keys.Escape))
+            {
+                _showPlayers = false;
+            }
+        }
+        else if(_showFormations){
+
+            if (inputState.IsKeyPressed(Keys.Up))
+            {
+                if (_selectedFormationIndex == 0)
+                {
+                    _selectedFormationIndex = _formations.Count - 1;
+                }
+                else
+                {
+                    _selectedFormationIndex = Math.Max(0, _selectedFormationIndex - 1);
+                }
+            }
+
+            if (inputState.IsKeyPressed(Keys.Down))
+            {
+                if (_selectedFormationIndex == _formations.Count - 1)
+                {
+                    _selectedFormationIndex = 0;
+                }
+                else
+                {
+                    _selectedFormationIndex = Math.Min(_formations.Count - 1, _selectedFormationIndex + 1);
+                }
+            }
+
+            if (inputState.IsKeyPressed(Keys.Enter)){
+
+                if(_formations[_selectedFormationIndex] == "4-4-2"){
+                    _gameState.TeamSelected.CurrentFormation = new FourFourTwoFormation();
+                }
+                else if(_formations[_selectedFormationIndex] == "4-4-1-1"){
+                    _gameState.TeamSelected.CurrentFormation = new FourFourOneOneFormation();
+                }
+                else if(_formations[_selectedFormationIndex] == "4-3-3"){
+                    _gameState.TeamSelected.CurrentFormation = new FourThreeThreeFormation();
+                }
+                else if(_formations[_selectedFormationIndex] == "4-3-3 Attacking"){
+                    _gameState.TeamSelected.CurrentFormation = new FourThreeThreeAttackingFormation();
+                }
+                else if(_formations[_selectedFormationIndex] == "4-3-3 Defensive"){
+                    _gameState.TeamSelected.CurrentFormation = new FourThreeThreeDefensiveFormation();
+                }
+                else if(_formations[_selectedFormationIndex] == "4-1-2-1-2"){
+                    _gameState.TeamSelected.CurrentFormation = new FourOneTwoOneTwoFormation();
+                }
+                else if(_formations[_selectedFormationIndex] == "4-2-1-2-1"){
+                    _gameState.TeamSelected.CurrentFormation = new FourTwoOneTwoOneFormation();
+                }
+                else if(_formations[_selectedFormationIndex] == "4-5-1"){
+                    _gameState.TeamSelected.CurrentFormation = new FourFiveOneFormation();
+                }
+                else if(_formations[_selectedFormationIndex] == "5-3-2"){
+                    _gameState.TeamSelected.CurrentFormation = new FiveThreeTwoFormation();
+                }
+                else if(_formations[_selectedFormationIndex] == "5-2-1-2"){
+                    _gameState.TeamSelected.CurrentFormation = new FiveTwoOneTwoFormation();
+                }
+                else if(_formations[_selectedFormationIndex] == "5-4-1"){
+                    _gameState.TeamSelected.CurrentFormation = new FiveFourOneFormation();
+                }
+                else if(_formations[_selectedFormationIndex] == "3-4-3"){
+                    _gameState.TeamSelected.CurrentFormation = new ThreeFourThreeFormation();
+                }
+                else if(_formations[_selectedFormationIndex] == "3-4-1-2"){
+                    _gameState.TeamSelected.CurrentFormation = new ThreeFourOneTwoFormation();
+                }
+                // else if(_formations[_selectedFormationIndex] == "111"){
+                //     _gameState.TeamSelected.CurrentFormation = new AllPosFormation();
+                // }
+                
+            }
+
+
+
+
+            if (inputState.IsKeyPressed(Keys.Escape))
+            {
+                _showFormations = false;
+            }
+        }
+        else
+        {
             if (inputState.IsKeyPressed(Keys.Up))
             {
                 if (_selectionIndex == 0)
@@ -119,10 +249,12 @@ public class TeamStrategyScreen : Screen
             }
             if (inputState.IsKeyPressed(Keys.Enter))
             {
-                if(_selectionIndex == 0){
-
+                if (_selectionIndex == 0)
+                {
+                    _showFormations = true;
                 }
-                else if (_selectionIndex == 1){
+                else if (_selectionIndex == 1)
+                {
                     _showPlayers = true;
                 }
             }
@@ -132,45 +264,7 @@ public class TeamStrategyScreen : Screen
                 _gameState.TeamSelected = null;
                 ScreenManager.Instance.ChangeScreen("CareerMenu");
             }
-
         }
-        else{
-
-            if (inputState.IsKeyPressed(Keys.Up))
-            {
-                if (_selectedPlayerIndex == 0)
-                {
-                    _selectedPlayerIndex = _gameState.TeamSelected.Players.Count - 1;
-                }
-                else{
-                    _selectedPlayerIndex = Math.Max(0, _selectedPlayerIndex - 1);
-                }
-            }
-
-            if (inputState.IsKeyPressed(Keys.Down))
-            {
-                if (_selectedPlayerIndex == _gameState.TeamSelected.Players.Count - 1)
-                {
-                    _selectedPlayerIndex = 0;
-                }
-                else
-                {
-                    _selectedPlayerIndex = Math.Min(_gameState.TeamSelected.Players.Count - 1, _selectedPlayerIndex + 1);
-                }
-            }
-            if (inputState.IsKeyPressed(Keys.Enter))
-            {
-                var orderedList = _gameState.TeamSelected.Players.OrderBy(p => p.Positions.First()).ToList();
-                _gameState.PlayerSelected = orderedList[_selectedPlayerIndex];
-                ScreenManager.Instance.AddScreen("PlayerView", new PlayerViewScreen(_gameState, _font, orderedList[_selectedPlayerIndex], "TeamStrategyView"));
-                ScreenManager.Instance.ChangeScreen("PlayerView");
-
-            }
-            if (inputState.IsKeyPressed(Keys.Escape)){
-                _showPlayers = false;
-            }
-        }
-
-        
     }
 }
+

@@ -49,6 +49,7 @@ public class DataGenerator
         int playerCount = _random.Next(7, 12);
         team.Players.Add(GeneratePlayer(PlayerPositions.GK));
         team.Players.Add(GeneratePlayer(PlayerPositions.CB));
+        team.Players.Add(GeneratePlayer(PlayerPositions.CB));
         team.Players.Add(GeneratePlayer(PlayerPositions.LB));
         team.Players.Add(GeneratePlayer(PlayerPositions.RB));
         team.Players.Add(GeneratePlayer(PlayerPositions.CM));
@@ -56,7 +57,7 @@ public class DataGenerator
         team.Players.Add(GeneratePlayer(PlayerPositions.CAM));
         team.Players.Add(GeneratePlayer(PlayerPositions.LW));
         team.Players.Add(GeneratePlayer(PlayerPositions.RW));
-        team.Players.Add(GeneratePlayer(PlayerPositions.ST));
+        team.Players.Add(GeneratePlayer(PlayerPositions.CF));
         for (int i = 0; i < playerCount; i++)
         {
             team.Players.Add(GeneratePlayer(PlayerPositions.NONE));
@@ -268,12 +269,12 @@ public class DataGenerator
                 return attribute == Attributes.Crossing || attribute == Attributes.Dribbling || attribute == Attributes.BallControl || 
                 attribute == Attributes.Vision || attribute == Attributes.Finishing || attribute == Attributes.LongShooting || 
                 attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing;
-            case PlayerPositions.ST:
-                return attribute == Attributes.Finishing || attribute == Attributes.LongShooting || attribute == Attributes.Dribbling || 
-                attribute == Attributes.BallControl;
             case PlayerPositions.CF:
             case PlayerPositions.LF:
             case PlayerPositions.RF:
+                return attribute == Attributes.Finishing || attribute == Attributes.LongShooting || attribute == Attributes.Dribbling || 
+                attribute == Attributes.BallControl;
+            case PlayerPositions.F9:
                 return attribute == Attributes.Finishing || attribute == Attributes.LongShooting || attribute == Attributes.Dribbling || 
                 attribute == Attributes.BallControl || attribute == Attributes.Vision || attribute == Attributes.ShortPassing;
 
