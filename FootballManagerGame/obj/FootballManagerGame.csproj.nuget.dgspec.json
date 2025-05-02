@@ -54,9 +54,17 @@
               "target": "Package",
               "version": "[3.8.*, )"
             },
+            "MonoGame.Extended": {
+              "target": "Package",
+              "version": "[4.0.4, )"
+            },
             "MonoGame.Framework.DesktopGL": {
               "target": "Package",
               "version": "[3.8.*, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
             }
           },
           "imports": [

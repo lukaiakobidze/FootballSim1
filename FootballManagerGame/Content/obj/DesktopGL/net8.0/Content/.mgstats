@@ -1,2 +1,4 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
 "D:/CODING/C#/FootballSim/1/FootballManagerGame/Content/GameFont.spritefont","D:/CODING/C#/FootballSim/1/FootballManagerGame/Content/bin/DesktopGL/Content/GameFont.xnb","FontDescriptionProcessor","SpriteFontContent",2081,37913,0.1742046
+"D:/CODING/C#/FootballSim/1/FootballManagerGame/Content/Shirt.png","D:/CODING/C#/FootballSim/1/FootballManagerGame/Content/bin/DesktopGL/Content/Shirt.xnb","TextureProcessor","Texture2DContent",5222,99941,0.1215639
+"D:/CODING/C#/FootballSim/1/FootballManagerGame/Content/stadium.png","D:/CODING/C#/FootballSim/1/FootballManagerGame/Content/bin/DesktopGL/Content/stadium.xnb","TextureProcessor","Texture2DContent",9631,2712725,0.2187692

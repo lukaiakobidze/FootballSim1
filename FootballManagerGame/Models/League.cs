@@ -12,11 +12,12 @@ public class League{
     public int RelegationTeamAmount { get; set; }
     public int PromotionTeamAmount { get; set; }
     public string Nationality { get; set; }
+    public DateTime SeasonStart { get; set; } = new DateTime(2024, 8, 17);
     public List<Team> teams{ get; set; }
     public Dictionary<string, List<int>> Table { get; set; } = new Dictionary<string, List<int>>();
     public List<List<Fixture>> AllFixtures { get; set; } = new List<List<Fixture>>{ };
 
-    public League(){
+    public void InitializeNewLeague(){
         teams = DataGenerator.GenerateLeague(TeamAmount);
         foreach (Team team in teams)
         {
@@ -24,15 +25,12 @@ public class League{
         }
            
         AllFixtures = GenerateFixtures(teams);
-
-        foreach (var fixture in AllFixtures[0])
-        {
-            DataGenerator.SimFixture(fixture);
-        }
     }
+
 
     public List<List<Fixture>> GenerateFixtures(List<Team> teams)
     {
+        int j = 0;
         int teamCount = teams.Count;
         if (teamCount % 2 != 0)
             throw new ArgumentException("Team count must be even.");
@@ -63,7 +61,7 @@ public class League{
                 Team home = roundTeams[i];
                 Team away = roundTeams[teamCount - 1 - i];
 
-                matchday.Add(new Fixture(){Team1 = home, Team2 = away, League = this});
+                matchday.Add(new Fixture(){Team1 = home, Team2 = away, League = this, Date = this.SeasonStart.AddDays(7 * j)});
             }
             DataGenerator.Shuffle(matchday);
             allMatchdays.Add(matchday);
@@ -72,8 +70,9 @@ public class League{
             Team last = rotation[rotation.Count - 1];
             rotation.RemoveAt(rotation.Count - 1);
             rotation.Insert(1, last);
+            j++;
         }
-
+        
         // Second leg: reverse home/away
         List<List<Fixture>> returnLegs = new List<List<Fixture>>();
         foreach (var matchday in allMatchdays)
@@ -81,8 +80,9 @@ public class League{
             List<Fixture> reversedMatchday = new List<Fixture>();
             foreach (var match in matchday)
             {
-                reversedMatchday.Add(new Fixture(){Team1 = match.Team2, Team2 = match.Team1, League = this});
+                reversedMatchday.Add(new Fixture(){Team1 = match.Team2, Team2 = match.Team1, League = this, Date = this.SeasonStart.AddDays(7 * j)});
             }
+            j++;
             returnLegs.Add(reversedMatchday);
         }
 

@@ -7,6 +7,7 @@ using FootballManagerGame.Input;
 using FootballManagerGame.Data;
 using System.Collections.Generic;
 using FootballManagerGame.Models;
+using FootballManagerGame.Helpers;
 
 namespace FootballManagerGame.Views;
 
@@ -15,17 +16,21 @@ public class NewGameScreen : Screen
     private GameState _gameState;
     private SpriteFont _font;
     private GraphicsDeviceManager _graphics;
+    private ShapeDrawer _shapes;
     private GameDataService _gameDataService;
+    private List<Texture2D> _textures;
     private int _saveSlot;
     private List<Team> _availableTeams;
     private int _selectedTeamIndex = 0;
 
-    public NewGameScreen(GameState gameState, SpriteFont font, GraphicsDeviceManager graphics, GameDataService gameDataService, int saveSlot)
+    public NewGameScreen(GameState gameState, SpriteFont font, GraphicsDeviceManager graphics, GameDataService gameDataService, ShapeDrawer shapes, List<Texture2D> textures, int saveSlot)
     {
         _gameState = gameState;
         _font = font;
         _graphics = graphics;
         _gameDataService = gameDataService;
+        _shapes = shapes;
+        _textures = textures;
         _saveSlot = saveSlot;
         
         _availableTeams = _gameState.Leagues[0].teams;
@@ -82,7 +87,7 @@ public class NewGameScreen : Screen
         if (inputState.IsKeyPressed(Keys.Enter))
         {
             _gameState.TeamSelected = _availableTeams[_selectedTeamIndex];
-            ScreenManager.Instance.AddScreen("NewGameTeamView", new NewGameTeamViewScreen(_gameState, _font, _graphics, _gameDataService, _saveSlot));
+            ScreenManager.Instance.AddScreen("NewGameTeamView", new NewGameTeamViewScreen(_gameState, _font, _graphics, _gameDataService, _shapes, _textures, _saveSlot));
             ScreenManager.Instance.ChangeScreen("NewGameTeamView");
         }
 

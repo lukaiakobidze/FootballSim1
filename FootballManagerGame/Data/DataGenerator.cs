@@ -25,58 +25,15 @@ public class DataGenerator
     }
 
     public static void SimFixture(Fixture fixture){
-        int attDiff = fixture.Team1.AvgAttack - fixture.Team2.AvgAttack;
-        int midDiff = fixture.Team1.AvgMidfield - fixture.Team2.AvgMidfield;
-        int defDiff = fixture.Team1.AvgDefence - fixture.Team2.AvgDefence;
-        int team1Score = 0;
-        int team2Score = 0;
-        int total = attDiff + midDiff + defDiff;
-    
-        int randomWin = Math.Max(Math.Min(_random.Next(100) + total * 2, 100), 0);
-        if(randomWin < 5){
-            team1Score = _random.Next(10);
-            team2Score = _random.Next(2);
-        }
-        else if(randomWin < 10){
-            team1Score = _random.Next(8);
-            team2Score = _random.Next(3);
-        }
-        else if(randomWin < 20){
-            team1Score = _random.Next(7);
-            team2Score = _random.Next(4);
-        }
-        else if(randomWin < 30){
-            team1Score = _random.Next(4);
-            team2Score = _random.Next(3);
-        }
-        else if(randomWin < 45){
-            team1Score = _random.Next(3);
-            team2Score = _random.Next(2);
-        }
-        else if(randomWin < 55){
-            team1Score = _random.Next(1);
-            team2Score = _random.Next(1);
-        }
-        else if(randomWin < 65){
-            team1Score = _random.Next(2);
-            team2Score = _random.Next(3);
-        }
-        else if(randomWin < 80){
-            team1Score = _random.Next(3);
-            team2Score = _random.Next(4);
-        }
-        else if(randomWin < 90){
-            team1Score = _random.Next(4);
-            team2Score = _random.Next(7);
-        }
-        else if(randomWin < 95){
-            team1Score = _random.Next(3);
-            team2Score = _random.Next(8);
-        }
-        else{
-            team1Score = _random.Next(2);
-            team2Score = _random.Next(10);
-        }
+        double team1Strength = Math.Pow(fixture.Team1.AvgAttack * 0.33 + fixture.Team1.AvgMidfield * 0.33 + fixture.Team1.AvgDefence * 0.33, 3);
+        double team2Strength = Math.Pow(fixture.Team2.AvgAttack * 0.33 + fixture.Team2.AvgMidfield * 0.33 + fixture.Team2.AvgDefence * 0.33, 3);
+
+
+        double ratio = team1Strength / (team1Strength + team2Strength);
+
+        int maxGoals = 8;
+        int team1Score = _random.Next((int)(ratio * maxGoals) + 1);
+        int team2Score = _random.Next((int)((1 - ratio) * maxGoals) + 1);
         fixture.SetResult(team1Score, team2Score);
     }
     public static Team GenerateTeam(string name, string nameShort)
@@ -92,6 +49,7 @@ public class DataGenerator
         int playerCount = _random.Next(7, 12);
         team.Players.Add(GeneratePlayer(PlayerPositions.GK));
         team.Players.Add(GeneratePlayer(PlayerPositions.CB));
+        team.Players.Add(GeneratePlayer(PlayerPositions.CB));
         team.Players.Add(GeneratePlayer(PlayerPositions.LB));
         team.Players.Add(GeneratePlayer(PlayerPositions.RB));
         team.Players.Add(GeneratePlayer(PlayerPositions.CM));
@@ -99,7 +57,7 @@ public class DataGenerator
         team.Players.Add(GeneratePlayer(PlayerPositions.CAM));
         team.Players.Add(GeneratePlayer(PlayerPositions.LW));
         team.Players.Add(GeneratePlayer(PlayerPositions.RW));
-        team.Players.Add(GeneratePlayer(PlayerPositions.ST));
+        team.Players.Add(GeneratePlayer(PlayerPositions.CF));
         for (int i = 0; i < playerCount; i++)
         {
             team.Players.Add(GeneratePlayer(PlayerPositions.NONE));
@@ -149,7 +107,7 @@ public class DataGenerator
 
             do
             {
-                primaryPosition = (PlayerPositions)_random.Next(Enum.GetValues(typeof(PlayerPositions)).Length);
+                primaryPosition = (PlayerPositions)_random.Next(Enum.GetValues(typeof(PlayerPositions)).Length - 10);
             }
             while (primaryPosition == PlayerPositions.NONE);
             player.Positions.Add(primaryPosition);
@@ -165,7 +123,7 @@ public class DataGenerator
         {
             do
             {
-                secondaryPosition = (PlayerPositions)_random.Next(Enum.GetValues(typeof(PlayerPositions)).Length);
+                secondaryPosition = (PlayerPositions)_random.Next(Enum.GetValues(typeof(PlayerPositions)).Length - 10);
             } while (secondaryPosition == primaryPosition || secondaryPosition == PlayerPositions.GK || secondaryPosition == PlayerPositions.NONE);
 
             player.Positions.Add(secondaryPosition);
@@ -270,38 +228,55 @@ public class DataGenerator
         switch (position)
         {
             case PlayerPositions.GK:
-                return attribute == Attributes.Reflexes || attribute == Attributes.Diving || attribute == Attributes.Sweeping || attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing || attribute == Attributes.Vision;
+                return attribute == Attributes.Reflexes || attribute == Attributes.Diving || attribute == Attributes.Sweeping || 
+                attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing || attribute == Attributes.Vision;
 
             case PlayerPositions.CB:
-                return attribute == Attributes.Sliding || attribute == Attributes.Tackling || attribute == Attributes.Strength || attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing;
+            case PlayerPositions.LCB:
+            case PlayerPositions.RCB:
+                return attribute == Attributes.Sliding || attribute == Attributes.Tackling || attribute == Attributes.Strength || 
+                attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing;
             case PlayerPositions.LB:
             case PlayerPositions.RB:
-                return attribute == Attributes.Sliding || attribute == Attributes.Tackling || attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing || attribute == Attributes.Crossing;
+                return attribute == Attributes.Sliding || attribute == Attributes.Tackling || attribute == Attributes.ShortPassing || 
+                attribute == Attributes.LongPassing || attribute == Attributes.Crossing;
 
             case PlayerPositions.CDM:
-                return attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing || attribute == Attributes.LongShooting || attribute == Attributes.Tackling || attribute == Attributes.Sliding || attribute == Attributes.Strength;
+            case PlayerPositions.LDM:
+            case PlayerPositions.RDM:
+                return attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing || attribute == Attributes.LongShooting || 
+                attribute == Attributes.Tackling || attribute == Attributes.Sliding || attribute == Attributes.Strength;
             case PlayerPositions.CM:
-                return attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing || attribute == Attributes.LongShooting || attribute == Attributes.BallControl || attribute == Attributes.Dribbling || attribute == Attributes.Vision;
-
+            case PlayerPositions.LCM:
+            case PlayerPositions.RCM:
+                return attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing || attribute == Attributes.LongShooting || 
+                attribute == Attributes.BallControl || attribute == Attributes.Dribbling || attribute == Attributes.Vision;
             case PlayerPositions.CAM:
-                return attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing || attribute == Attributes.Vision || attribute == Attributes.Dribbling || attribute == Attributes.BallControl || attribute == Attributes.LongShooting;
+            case PlayerPositions.LAM:
+            case PlayerPositions.RAM:
+                return attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing || attribute == Attributes.Vision || 
+                attribute == Attributes.Dribbling || attribute == Attributes.BallControl || attribute == Attributes.LongShooting;
             case PlayerPositions.LM:
             case PlayerPositions.RM:
-                return attribute == Attributes.Crossing || attribute == Attributes.Vision || attribute == Attributes.Dribbling || attribute == Attributes.BallControl || attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing;
+                return attribute == Attributes.Crossing || attribute == Attributes.Vision || attribute == Attributes.Dribbling || 
+                attribute == Attributes.BallControl || attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing;
             case PlayerPositions.LWB:
             case PlayerPositions.RWB:
-                return attribute == Attributes.Tackling || attribute == Attributes.Crossing || attribute == Attributes.Vision || attribute == Attributes.Dribbling || attribute == Attributes.BallControl || attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing;
-
+                return attribute == Attributes.Tackling || attribute == Attributes.Crossing || attribute == Attributes.Vision || 
+                attribute == Attributes.Dribbling || attribute == Attributes.BallControl || attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing;
             case PlayerPositions.LW:
             case PlayerPositions.RW:
-                return attribute == Attributes.Crossing || attribute == Attributes.Dribbling || attribute == Attributes.BallControl || attribute == Attributes.Vision || attribute == Attributes.Finishing || attribute == Attributes.LongShooting || attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing;
-
-            case PlayerPositions.ST:
-                return attribute == Attributes.Finishing || attribute == Attributes.LongShooting || attribute == Attributes.Dribbling || attribute == Attributes.BallControl;
+                return attribute == Attributes.Crossing || attribute == Attributes.Dribbling || attribute == Attributes.BallControl || 
+                attribute == Attributes.Vision || attribute == Attributes.Finishing || attribute == Attributes.LongShooting || 
+                attribute == Attributes.ShortPassing || attribute == Attributes.LongPassing;
             case PlayerPositions.CF:
             case PlayerPositions.LF:
             case PlayerPositions.RF:
-                return attribute == Attributes.Finishing || attribute == Attributes.LongShooting || attribute == Attributes.Dribbling || attribute == Attributes.BallControl || attribute == Attributes.Vision || attribute == Attributes.ShortPassing;
+                return attribute == Attributes.Finishing || attribute == Attributes.LongShooting || attribute == Attributes.Dribbling || 
+                attribute == Attributes.BallControl;
+            case PlayerPositions.F9:
+                return attribute == Attributes.Finishing || attribute == Attributes.LongShooting || attribute == Attributes.Dribbling || 
+                attribute == Attributes.BallControl || attribute == Attributes.Vision || attribute == Attributes.ShortPassing;
 
             default:
                 return false;

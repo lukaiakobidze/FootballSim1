@@ -13,11 +13,13 @@ public class PlayerViewScreen : Screen
     private GameState _gameState;
     private SpriteFont _font;
     private Player _player;
-    public PlayerViewScreen(GameState gameState, SpriteFont font, Player player)
+    private string OriginScreen;
+    public PlayerViewScreen(GameState gameState, SpriteFont font, Player player, string originScreen)
     {
         _gameState = gameState;
         _font = font;
         _player = player;
+        OriginScreen = originScreen;
     }
 
     public override void Update(GameTime gameTime)
@@ -80,8 +82,8 @@ public class PlayerViewScreen : Screen
     {
         if (inputState.IsKeyPressed(Keys.Escape))
         {
-            ScreenManager.Instance.ChangeScreen("TeamView");
             _player = null;
+            ScreenManager.Instance.ChangeScreen(OriginScreen);
         }
     }
 

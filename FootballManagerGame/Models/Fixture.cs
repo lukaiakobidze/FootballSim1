@@ -10,6 +10,7 @@ public class Fixture{
     public Team Team1 { get; set; }
     public Team Team2 { get; set; }
     public League League { get; set; }
+    public DateTime Date { get; set; }
     public Team Winner { get; set; }
     public bool ExtraTime { get; set; }
     public bool Completed { get; set; }
