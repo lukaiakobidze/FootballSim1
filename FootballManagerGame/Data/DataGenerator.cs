@@ -64,6 +64,7 @@ public class DataGenerator
         }
 
         team.CalcAvg();
+        team.CurrentFormation.InitPositions();
         return team;
     }
 
