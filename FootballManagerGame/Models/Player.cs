@@ -12,6 +12,7 @@ public class Player
     public Dictionary<Attributes, int> Attributes { get; set; } = new Dictionary<Attributes, int>();
     public List<PlayerPositions> Positions { get; set; } = new List<PlayerPositions>();
     public int Overall { get; set; }
+    public int LiveOverall { get; set; }
 
 
     public PlayerPositions PrimaryPosition => Positions.Count > 0 ? Positions[0] : PlayerPositions.CM;

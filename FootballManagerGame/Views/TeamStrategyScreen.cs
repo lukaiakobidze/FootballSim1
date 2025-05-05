@@ -8,6 +8,7 @@ using FootballManagerGame.Models;
 using System.Linq;
 using System.Collections.Generic;
 using FootballManagerGame.Helpers;
+using FootballManagerGame.Data;
 using FootballManagerGame.Enums;
 namespace FootballManagerGame.Views;
 
@@ -92,13 +93,14 @@ public class TeamStrategyScreen : Screen
                         spriteBatch.DrawString(_font, $"{_gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]].Name}", 
                             new Vector2(180, y), color);
 
-                        if (_gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]].Overall < 40) { colorOVR = Color.IndianRed; }
-                        else if (_gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]].Overall < 60) { colorOVR = Color.Orange; }
-                        else if (_gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]].Overall < 70) { colorOVR = Color.Yellow; }
-                        else if (_gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]].Overall < 80) { colorOVR = Color.LightGreen; }
-                        else if (_gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]].Overall < 90) { colorOVR = Color.SpringGreen; }
+                        if (_gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]].LiveOverall < 40) { colorOVR = Color.IndianRed; }
+                        else if (_gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]].LiveOverall < 60) { colorOVR = Color.Orange; }
+                        else if (_gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]].LiveOverall < 70) { colorOVR = Color.Yellow; }
+                        else if (_gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]].LiveOverall < 80) { colorOVR = Color.LightGreen; }
+                        else if (_gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]].LiveOverall < 90) { colorOVR = Color.SpringGreen; }
                         else { colorOVR = Color.Cyan; }
-                        spriteBatch.DrawString(_font, $"{_gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]].Overall}", new Vector2(500, y), colorOVR);
+                        spriteBatch.DrawString(_font, $"{_gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]].LiveOverall}", 
+                            new Vector2(500, y), colorOVR);
                     }
                     
 
@@ -131,7 +133,7 @@ public class TeamStrategyScreen : Screen
             spriteBatch.DrawString(_font, _gameState.TeamSelected.CurrentFormation.Name, new Vector2(_graphics.GraphicsDevice.Viewport.Width - 300, 100), Color.White, 0f,
                 _font.MeasureString(_gameState.TeamSelected.CurrentFormation.Name) / 2, 1.25f, SpriteEffects.None, 0f);
             FormationDrawer.DrawFormation(_gameState.TeamSelected.CurrentFormation, new Vector2(_graphics.GraphicsDevice.Viewport.Width - 600, 100), 1, 
-                spriteBatch, _textures, _graphics, _font, _gameState);
+                spriteBatch, _textures, _graphics, _font, _gameState, _selectedPositionIndex);
 
         }
         spriteBatch.End();
@@ -169,12 +171,14 @@ public class TeamStrategyScreen : Screen
                 orderedList = _gameState.TeamSelected.Players.OrderBy(p => p.Positions.First()).ThenBy(p => p.Overall).ToList();
                 orderedList.RemoveAll(item => _gameState.TeamSelected.CurrentFormation.Players.ContainsValue(item));
                 _gameState.TeamSelected.CurrentFormation.AssignPlayerToPosition(orderedList[_selectedPlayerIndex], _gameState.TeamSelected.CurrentFormation.Positions[_selectedPositionIndex]);
+                DataGenerator.UpdateLiveOverall(orderedList[_selectedPlayerIndex], _gameState.TeamSelected.CurrentFormation.Positions[_selectedPositionIndex]);
+                
                 _showPlayers = false;
                 _showPositions = true;
             }
             if(inputState.IsKeyPressed(Keys.Q)){
                 _gameState.PlayerSelected = orderedList[_selectedPlayerIndex];
-                ScreenManager.Instance.AddScreen("PlayerView", new PlayerViewScreen(_gameState, _font, orderedList[_selectedPlayerIndex], "TeamStrategyView"));
+                ScreenManager.Instance.AddScreen("PlayerView", new PlayerViewScreen(_gameState, _font, "TeamStrategyView"));
                 ScreenManager.Instance.ChangeScreen("PlayerView");
             }
             if (inputState.IsKeyPressed(Keys.Escape))
@@ -218,6 +222,7 @@ public class TeamStrategyScreen : Screen
                     {
                         if(_gameState.TeamSelected.CurrentFormation.Players.ContainsKey(_gameState.TeamSelected.CurrentFormation.Positions[i])){
                             formation.Players[formation.Positions[i]] = _gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]];
+                            DataGenerator.UpdateLiveOverall(_gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]], formation.Positions[i]);
                         }
                         
                     }
@@ -231,6 +236,7 @@ public class TeamStrategyScreen : Screen
                     {
                         if(_gameState.TeamSelected.CurrentFormation.Players.ContainsKey(_gameState.TeamSelected.CurrentFormation.Positions[i])){
                             formation.Players[formation.Positions[i]] = _gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]];
+                            DataGenerator.UpdateLiveOverall(_gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]], formation.Positions[i]);
                         }
                         
                     }
@@ -243,6 +249,7 @@ public class TeamStrategyScreen : Screen
                     {
                         if(_gameState.TeamSelected.CurrentFormation.Players.ContainsKey(_gameState.TeamSelected.CurrentFormation.Positions[i])){
                             formation.Players[formation.Positions[i]] = _gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]];
+                            DataGenerator.UpdateLiveOverall(_gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]], formation.Positions[i]);
                         }
                         
                     }
@@ -255,6 +262,7 @@ public class TeamStrategyScreen : Screen
                     {
                         if(_gameState.TeamSelected.CurrentFormation.Players.ContainsKey(_gameState.TeamSelected.CurrentFormation.Positions[i])){
                             formation.Players[formation.Positions[i]] = _gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]];
+                            DataGenerator.UpdateLiveOverall(_gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]], formation.Positions[i]);
                         }
                         
                     }
@@ -267,6 +275,7 @@ public class TeamStrategyScreen : Screen
                     {
                         if(_gameState.TeamSelected.CurrentFormation.Players.ContainsKey(_gameState.TeamSelected.CurrentFormation.Positions[i])){
                             formation.Players[formation.Positions[i]] = _gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]];
+                            DataGenerator.UpdateLiveOverall(_gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]], formation.Positions[i]);
                         }
                         
                     }
@@ -279,6 +288,7 @@ public class TeamStrategyScreen : Screen
                     {
                         if(_gameState.TeamSelected.CurrentFormation.Players.ContainsKey(_gameState.TeamSelected.CurrentFormation.Positions[i])){
                             formation.Players[formation.Positions[i]] = _gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]];
+                            DataGenerator.UpdateLiveOverall(_gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]], formation.Positions[i]);
                         }
                         
                     }
@@ -291,6 +301,7 @@ public class TeamStrategyScreen : Screen
                     {
                         if(_gameState.TeamSelected.CurrentFormation.Players.ContainsKey(_gameState.TeamSelected.CurrentFormation.Positions[i])){
                             formation.Players[formation.Positions[i]] = _gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]];
+                            DataGenerator.UpdateLiveOverall(_gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]], formation.Positions[i]);
                         }
                         
                     }
@@ -303,6 +314,7 @@ public class TeamStrategyScreen : Screen
                     {
                         if(_gameState.TeamSelected.CurrentFormation.Players.ContainsKey(_gameState.TeamSelected.CurrentFormation.Positions[i])){
                             formation.Players[formation.Positions[i]] = _gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]];
+                            DataGenerator.UpdateLiveOverall(_gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]], formation.Positions[i]);
                         }
                         
                     }
@@ -315,6 +327,7 @@ public class TeamStrategyScreen : Screen
                     {
                         if(_gameState.TeamSelected.CurrentFormation.Players.ContainsKey(_gameState.TeamSelected.CurrentFormation.Positions[i])){
                             formation.Players[formation.Positions[i]] = _gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]];
+                            DataGenerator.UpdateLiveOverall(_gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]], formation.Positions[i]);
                         }
                         
                     }
@@ -327,6 +340,7 @@ public class TeamStrategyScreen : Screen
                     {
                         if(_gameState.TeamSelected.CurrentFormation.Players.ContainsKey(_gameState.TeamSelected.CurrentFormation.Positions[i])){
                             formation.Players[formation.Positions[i]] = _gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]];
+                            DataGenerator.UpdateLiveOverall(_gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]], formation.Positions[i]);
                         }
                         
                     }
@@ -339,6 +353,7 @@ public class TeamStrategyScreen : Screen
                     {
                         if(_gameState.TeamSelected.CurrentFormation.Players.ContainsKey(_gameState.TeamSelected.CurrentFormation.Positions[i])){
                             formation.Players[formation.Positions[i]] = _gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]];
+                            DataGenerator.UpdateLiveOverall(_gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]], formation.Positions[i]);
                         }
                         
                     }
@@ -351,6 +366,7 @@ public class TeamStrategyScreen : Screen
                     {
                         if(_gameState.TeamSelected.CurrentFormation.Players.ContainsKey(_gameState.TeamSelected.CurrentFormation.Positions[i])){
                             formation.Players[formation.Positions[i]] = _gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]];
+                            DataGenerator.UpdateLiveOverall(_gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]], formation.Positions[i]);
                         }
                         
                     }
@@ -363,6 +379,7 @@ public class TeamStrategyScreen : Screen
                     {
                         if(_gameState.TeamSelected.CurrentFormation.Players.ContainsKey(_gameState.TeamSelected.CurrentFormation.Positions[i])){
                             formation.Players[formation.Positions[i]] = _gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]];
+                            DataGenerator.UpdateLiveOverall(_gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[i]], formation.Positions[i]);
                         }
                         
                     }
@@ -407,6 +424,18 @@ public class TeamStrategyScreen : Screen
 
                 _showPositions = false;
                 _showPlayers = true;
+            }
+
+            if(inputState.IsKeyPressed(Keys.Q)){
+                
+
+                if (_gameState.TeamSelected.CurrentFormation.Players.ContainsKey(_gameState.TeamSelected.CurrentFormation.Positions[_selectedPositionIndex])){
+                    _gameState.PlayerSelected = _gameState.TeamSelected.CurrentFormation.Players[_gameState.TeamSelected.CurrentFormation.Positions[_selectedPositionIndex]];
+                    ScreenManager.Instance.AddScreen("PlayerView", new PlayerViewScreen(_gameState, _font, "TeamStrategyView"));
+                    ScreenManager.Instance.ChangeScreen("PlayerView");
+                }
+
+                
             }
 
             if (inputState.IsKeyPressed(Keys.Delete)){

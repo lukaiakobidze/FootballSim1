@@ -314,4 +314,184 @@ public class DataGenerator
 
         return teams;
     }
+
+    public static void UpdateLiveOverall(Player player, PlayerPositions position){
+
+
+        List<double> values = new List<double>();
+
+        foreach (var pos in player.Positions){
+            switch (pos)
+            {
+                case PlayerPositions.GK:
+                    if (position != PlayerPositions.GK){
+                        values.Add(0.5);
+                    }
+                    else{
+                        values.Add(1.0);
+                    }
+                    break;
+                case PlayerPositions.CB:
+                    if (position == PlayerPositions.CB || position == PlayerPositions.LCB
+                    || position == PlayerPositions.RCB){
+                        values.Add(1.0);
+                    }
+                    else if (position == PlayerPositions.LB || position == PlayerPositions.RB
+                    || position == PlayerPositions.CDM){
+                        values.Add(0.8);
+                    }
+                    else{
+                        values.Add(0.5);
+                    }
+                    break;
+                case PlayerPositions.LB:
+                    if (position == PlayerPositions.LB || position == PlayerPositions.LWB){
+                        values.Add(1.0);
+                    }
+                    else if (position == PlayerPositions.RB || position == PlayerPositions.RWB
+                    || position == PlayerPositions.LM || position == PlayerPositions.LCB){
+                        values.Add(0.8);
+                    }
+                    else{
+                        values.Add(0.5);
+                    }
+                    break;
+                case PlayerPositions.RB:
+                    if (position == PlayerPositions.RB || position == PlayerPositions.RWB){
+                        values.Add(1.0);
+                    }
+                    else if (position == PlayerPositions.LB || position == PlayerPositions.LWB
+                    || position == PlayerPositions.RM || position == PlayerPositions.RCB ){
+                        values.Add(0.8);
+                    }
+                    else{
+                        values.Add(0.5);
+                    }
+                    break;
+                case PlayerPositions.CDM:
+                    if (position == PlayerPositions.CDM || position == PlayerPositions.LDM
+                    || position == PlayerPositions.RDM || position == PlayerPositions.CM
+                    || position == PlayerPositions.LCM || position == PlayerPositions.RCM){
+                        values.Add(1.0);
+                    }
+                    else if (position == PlayerPositions.CAM || position == PlayerPositions.LAM
+                    || position == PlayerPositions.RAM || position == PlayerPositions.CB
+                    || position == PlayerPositions.LCB || position == PlayerPositions.RCB){
+                        values.Add(0.8);
+                    }
+                    else{
+                        values.Add(0.5);
+                    }
+                    break;
+                case PlayerPositions.CM:
+                    if (position == PlayerPositions.CM || position == PlayerPositions.LCM
+                    || position == PlayerPositions.RCM || position == PlayerPositions.CDM
+                    || position == PlayerPositions.LDM || position == PlayerPositions.RDM
+                    || position == PlayerPositions.CAM || position == PlayerPositions.LAM
+                    || position == PlayerPositions.RAM){
+                        values.Add(1.0);
+                    }
+                    else if (position == PlayerPositions.LM || position == PlayerPositions.RM){
+                        values.Add(0.8);
+                    }
+                    else{
+                        values.Add(0.5);
+                    }
+                    break;
+                case PlayerPositions.CAM:
+                    if (position == PlayerPositions.CAM || position == PlayerPositions.LAM
+                    || position == PlayerPositions.RAM || position == PlayerPositions.CM
+                    || position == PlayerPositions.LCM || position == PlayerPositions.RCM){
+                        values.Add(1.0);
+                    }
+                    else if (position == PlayerPositions.CDM || position == PlayerPositions.LDM
+                    || position == PlayerPositions.RDM || position == PlayerPositions.F9){
+                        values.Add(0.8);
+                    }
+                    else{
+                        values.Add(0.5);
+                    }
+                    break;
+                case PlayerPositions.LM:
+                    if (position == PlayerPositions.LM || position == PlayerPositions.LW
+                    || position == PlayerPositions.LWB){
+                        values.Add(1.0);
+                    }
+                    else if (position == PlayerPositions.RM || position == PlayerPositions.RW
+                    || position == PlayerPositions.RWB || position == PlayerPositions.LB
+                    || position == PlayerPositions.LCM || position == PlayerPositions.LAM){
+                        values.Add(0.8);
+                    }
+                    else{
+                        values.Add(0.5);
+                    }
+                    break;
+                case PlayerPositions.RM:
+                    if (position == PlayerPositions.RM || position == PlayerPositions.RW
+                    || position == PlayerPositions.RWB){
+                        values.Add(1.0);
+                    }
+                    else if (position == PlayerPositions.LM || position == PlayerPositions.LW
+                    || position == PlayerPositions.LWB || position == PlayerPositions.RB
+                    || position == PlayerPositions.RCM || position == PlayerPositions.RAM){
+                        values.Add(0.8);
+                    }
+                    else{
+                        values.Add(0.5);
+                    }
+                    break;
+                case PlayerPositions.F9:
+                    if (position == PlayerPositions.F9 || position == PlayerPositions.CF
+                    || position == PlayerPositions.LF || position == PlayerPositions.RF){
+                        values.Add(1.0);
+                    }
+                    else if (position == PlayerPositions.CAM || position == PlayerPositions.LAM
+                    || position == PlayerPositions.RAM){
+                        values.Add(0.8);
+                    }
+                    else{
+                        values.Add(0.5);
+                    }
+                    break;
+                case PlayerPositions.LW:
+                    if (position == PlayerPositions.LW || position == PlayerPositions.LM){
+                        values.Add(1.0);
+                    }
+                    else if (position == PlayerPositions.LF || position == PlayerPositions.LAM
+                    || position == PlayerPositions.RW || position == PlayerPositions.LWB){
+                        values.Add(0.8);
+                    }
+                    else{
+                        values.Add(0.5);
+                    }
+                    break;
+                case PlayerPositions.RW:
+                    if (position == PlayerPositions.RW || position == PlayerPositions.RM){
+                        values.Add(1.0);
+                    }
+                    else if (position == PlayerPositions.RF || position == PlayerPositions.RAM
+                    || position == PlayerPositions.LW || position == PlayerPositions.RWB){
+                        values.Add(0.8);
+                    }
+                    else{
+                        values.Add(0.5);
+                    }
+                    break;
+                case PlayerPositions.CF:
+                    if (position == PlayerPositions.CF || position == PlayerPositions.LF
+                    || position == PlayerPositions.RF || position == PlayerPositions.F9){
+                        values.Add(1.0);
+                    }
+                    else{
+                        values.Add(0.5);
+                    }
+                    break;
+                
+            }
+
+        }
+
+        player.LiveOverall = (int)(player.Overall * values.Max());
+
+    }
 }

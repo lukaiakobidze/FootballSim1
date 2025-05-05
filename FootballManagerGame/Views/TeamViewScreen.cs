@@ -108,11 +108,11 @@ public class TeamViewScreen : Screen
                 _selectedPlayerIndex = Math.Min(_gameState.TeamSelected.Players.Count - 1, _selectedPlayerIndex + 1);
             }
         }
-        if (inputState.IsKeyPressed(Keys.Enter))
+        if (inputState.IsKeyPressed(Keys.Q))
         {
             var orderedList = _gameState.TeamSelected.Players.OrderBy(p => p.Positions.First()).ToList();
             _gameState.PlayerSelected = orderedList[_selectedPlayerIndex];
-            ScreenManager.Instance.AddScreen("PlayerView", new PlayerViewScreen(_gameState, _font, orderedList[_selectedPlayerIndex], "TeamView"));
+            ScreenManager.Instance.AddScreen("PlayerView", new PlayerViewScreen(_gameState, _font, "TeamView"));
             ScreenManager.Instance.ChangeScreen("PlayerView");
 
         }

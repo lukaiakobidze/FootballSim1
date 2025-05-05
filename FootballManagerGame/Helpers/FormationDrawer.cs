@@ -38,45 +38,54 @@ public class FormationDrawer
 
     private static Color txtColor = new Color(5, 7, 18);
 
-    public static void DrawFormation(Formation formation, Vector2 origin, float size, SpriteBatch spriteBatch, List<Texture2D> textures, GraphicsDeviceManager graphics, SpriteFont font, GameState gameState)
+    public static void DrawFormation(Formation formation, Vector2 origin, float size, SpriteBatch spriteBatch, List<Texture2D> textures, GraphicsDeviceManager graphics, 
+        SpriteFont font, GameState gameState, int index)
     {
 
         Rectangle area = new Rectangle((int)(origin.X), (int)(origin.Y), (int)(600*size), (int)(800*size));
 
         spriteBatch.Draw(textures[1], area, new Color(150, 150, 255, 50));
         
-        foreach (var position in formation.Positions){
-
+        
+        for (int i = 0; i < formation.Positions.Count; i++)
+        {
             Color colorOVR = Color.White;
 
-            spriteBatch.Draw(textures[0], new Rectangle((int)(area.X + PositionCords[position].X - 45 * size), (int)(area.Y + area.Height - PositionCords[position].Y - 45 * size),
-                (int)( 90 * size), (int)( 90 * size)), Color.White);
+            if (i == index){
+                colorOVR = Color.Yellow;
+            }
+
+            spriteBatch.Draw(textures[0], new Rectangle((int)(area.X + PositionCords[formation.Positions[i]].X - 45 * size), 
+                (int)(area.Y + area.Height - PositionCords[formation.Positions[i]].Y - 45 * size), (int)( 90 * size), (int)( 90 * size)), colorOVR);
             
-           
+        
 
-            spriteBatch.DrawString(font, $"{position}", new Vector2((int)(area.X + PositionCords[position].X), (int)(area.Y + area.Height - PositionCords[position].Y)), 
-                txtColor, 0f, font.MeasureString($"{position}") / 2, 0.85f * size, SpriteEffects.None, 0f);
+            spriteBatch.DrawString(font, $"{formation.Positions[i]}", new Vector2((int)(area.X + PositionCords[formation.Positions[i]].X), 
+                (int)(area.Y + area.Height - PositionCords[formation.Positions[i]].Y)), txtColor, 0f, 
+                font.MeasureString($"{formation.Positions[i]}") / 2, 0.85f * size, SpriteEffects.None, 0f);
 
-            if(gameState.TeamSelected.CurrentFormation.Players.ContainsKey(position)){
+            if(gameState.TeamSelected.CurrentFormation.Players.ContainsKey(formation.Positions[i])){
 
-                if (gameState.TeamSelected.CurrentFormation.Players[position].Overall < 40) { colorOVR = Color.IndianRed; }
-                        else if (gameState.TeamSelected.CurrentFormation.Players[position].Overall < 60) { colorOVR = Color.Orange; }
-                        else if (gameState.TeamSelected.CurrentFormation.Players[position].Overall < 70) { colorOVR = Color.Yellow; }
-                        else if (gameState.TeamSelected.CurrentFormation.Players[position].Overall < 80) { colorOVR = Color.LightGreen; }
-                        else if (gameState.TeamSelected.CurrentFormation.Players[position].Overall < 90) { colorOVR = Color.SpringGreen; }
+                if (gameState.TeamSelected.CurrentFormation.Players[formation.Positions[i]].LiveOverall < 40) { colorOVR = Color.IndianRed; }
+                        else if (gameState.TeamSelected.CurrentFormation.Players[formation.Positions[i]].LiveOverall < 60) { colorOVR = Color.Orange; }
+                        else if (gameState.TeamSelected.CurrentFormation.Players[formation.Positions[i]].LiveOverall < 70) { colorOVR = Color.Yellow; }
+                        else if (gameState.TeamSelected.CurrentFormation.Players[formation.Positions[i]].LiveOverall < 80) { colorOVR = Color.LightGreen; }
+                        else if (gameState.TeamSelected.CurrentFormation.Players[formation.Positions[i]].LiveOverall < 90) { colorOVR = Color.SpringGreen; }
                         else { colorOVR = Color.Cyan; }
 
 
-                spriteBatch.DrawString(font, $"{gameState.TeamSelected.CurrentFormation.Players[position].Name.Split(' ', StringSplitOptions.RemoveEmptyEntries)[^1]}", 
-                new Vector2((int)(area.X + PositionCords[position].X), (int)(area.Y + area.Height - PositionCords[position].Y + 40)), Color.White, 0f, 
-                font.MeasureString($"{gameState.TeamSelected.CurrentFormation.Players[position].Name.Split(' ', StringSplitOptions.RemoveEmptyEntries)[^1]}") / 2, 0.85f * size, 
-                SpriteEffects.None, 0f);
+                spriteBatch.DrawString(font, $"{gameState.TeamSelected.CurrentFormation.Players[formation.Positions[i]].Name.Split(' ', StringSplitOptions.RemoveEmptyEntries)[^1]}", 
+                new Vector2((int)(area.X + PositionCords[formation.Positions[i]].X), (int)(area.Y + area.Height - PositionCords[formation.Positions[i]].Y + 40)), Color.White, 0f, 
+                font.MeasureString($"{gameState.TeamSelected.CurrentFormation.Players[formation.Positions[i]].Name.Split(' ', StringSplitOptions.RemoveEmptyEntries)[^1]}") / 2, 
+                0.85f * size, SpriteEffects.None, 0f);
 
-                spriteBatch.DrawString(font, $"{gameState.TeamSelected.CurrentFormation.Players[position].Overall}", 
-                new Vector2((int)(area.X + PositionCords[position].X), (int)(area.Y + area.Height - PositionCords[position].Y + 55)), colorOVR, 0f, 
-                font.MeasureString($"{gameState.TeamSelected.CurrentFormation.Players[position].Overall}") / 2, 0.85f * size, 
+                spriteBatch.DrawString(font, $"{gameState.TeamSelected.CurrentFormation.Players[formation.Positions[i]].LiveOverall}", 
+                new Vector2((int)(area.X + PositionCords[formation.Positions[i]].X), (int)(area.Y + area.Height - PositionCords[formation.Positions[i]].Y + 55)), colorOVR, 0f, 
+                font.MeasureString($"{gameState.TeamSelected.CurrentFormation.Players[formation.Positions[i]].LiveOverall}") / 2, 0.85f * size, 
                 SpriteEffects.None, 0f);
             }
+            
+            
             
 
         }

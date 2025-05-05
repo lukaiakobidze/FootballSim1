@@ -14,11 +14,11 @@ public class PlayerViewScreen : Screen
     private SpriteFont _font;
     private Player _player;
     private string OriginScreen;
-    public PlayerViewScreen(GameState gameState, SpriteFont font, Player player, string originScreen)
+    public PlayerViewScreen(GameState gameState, SpriteFont font, string originScreen)
     {
         _gameState = gameState;
         _font = font;
-        _player = player;
+        _player = _gameState.PlayerSelected;
         OriginScreen = originScreen;
     }
 
@@ -83,6 +83,7 @@ public class PlayerViewScreen : Screen
         if (inputState.IsKeyPressed(Keys.Escape))
         {
             _player = null;
+            _gameState.PlayerSelected = null;
             ScreenManager.Instance.ChangeScreen(OriginScreen);
         }
     }
