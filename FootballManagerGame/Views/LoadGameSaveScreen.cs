@@ -103,7 +103,6 @@ public class LoadGameSaveScreen : Screen
         {
             if (_gameDataService.GetSaveGames().Contains($"Save{_selectionIndex + 1}")){
                 GameState gameState = _gameDataService.LoadGame($"Save{_selectionIndex + 1}");
-                Console.WriteLine($"{gameState.PlayerLeague.teams.Count}");
                 ScreenManager.Instance.AddScreen("CareerMenu", new CareerMenuScreen(_font, _graphics, _gameDataService, gameState, _shapes, _textures));
                 ScreenManager.Instance.ChangeScreen("CareerMenu");
                 

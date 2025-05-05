@@ -29,17 +29,23 @@ public class Formation{
             }
         }
 
-    public void RemovePlayers(){
+    public void RemoveAllPlayers(){
         Players = new Dictionary<PlayerPositions, Player>();
     }
 
+    public void RemovePlayer(PlayerPositions position){
+        Players.Remove(position);
+    }
+
     public bool IsComplete() => Players.Count == Positions.Count;
+
+    public virtual void InitPositions(){}
 }
 
 public class FourFourTwoFormation : Formation{
     public override string Name => "4-4-2";
 
-    public FourFourTwoFormation()
+    public override void InitPositions()
     {
         Positions = new List<PlayerPositions>
         {
@@ -60,8 +66,7 @@ public class FourFourTwoFormation : Formation{
 public class FourFourOneOneFormation : Formation{
     public override string Name => "4-4-1-1";
 
-    public FourFourOneOneFormation()
-    {
+    public override void InitPositions(){
         Positions = new List<PlayerPositions>
         {
             PlayerPositions.GK,
@@ -82,7 +87,7 @@ public class FourFourOneOneFormation : Formation{
 public class FourThreeThreeFormation : Formation{
     public override string Name => "4-3-3";
 
-    public FourThreeThreeFormation()
+    public override void InitPositions()
     {
         Positions = new List<PlayerPositions>
         {
@@ -103,8 +108,7 @@ public class FourThreeThreeFormation : Formation{
 
 public class FourThreeThreeAttackingFormation : Formation{
     public override string Name => "4-3-3 Attacking";
-
-    public FourThreeThreeAttackingFormation()
+    public override void InitPositions()
     {
         Positions = new List<PlayerPositions>
         {
@@ -125,7 +129,7 @@ public class FourThreeThreeAttackingFormation : Formation{
 public class FourThreeThreeDefensiveFormation : Formation{
     public override string Name => "4-3-3 Defensive";
 
-    public FourThreeThreeDefensiveFormation()
+    public override void InitPositions()
     {
         Positions = new List<PlayerPositions>
         {
@@ -146,7 +150,7 @@ public class FourThreeThreeDefensiveFormation : Formation{
 public class FourTwoOneTwoOneFormation : Formation{
     public override string Name => "4-2-1-2-1";
 
-    public FourTwoOneTwoOneFormation()
+    public override void InitPositions()
     {
         Positions = new List<PlayerPositions>
         {
@@ -167,7 +171,7 @@ public class FourTwoOneTwoOneFormation : Formation{
 public class FourOneTwoOneTwoFormation : Formation{
     public override string Name => "4-1-2-1-2";
 
-    public FourOneTwoOneTwoFormation()
+    public override void InitPositions()
     {
         Positions = new List<PlayerPositions>
         {
@@ -188,7 +192,7 @@ public class FourOneTwoOneTwoFormation : Formation{
 public class FourFiveOneFormation : Formation{
     public override string Name => "4-5-1";
 
-    public FourFiveOneFormation()
+    public override void InitPositions()
     {
         Positions = new List<PlayerPositions>
         {
@@ -209,7 +213,7 @@ public class FourFiveOneFormation : Formation{
 public class FiveThreeTwoFormation : Formation{
     public override string Name => "5-3-2";
 
-    public FiveThreeTwoFormation()
+    public override void InitPositions()
     {
         Positions = new List<PlayerPositions>
         {
@@ -231,7 +235,7 @@ public class FiveThreeTwoFormation : Formation{
 public class FiveTwoOneTwoFormation : Formation{
     public override string Name => "5-2-1-2";
 
-    public FiveTwoOneTwoFormation()
+    public override void InitPositions()
     {
         Positions = new List<PlayerPositions>
         {
@@ -253,7 +257,7 @@ public class FiveTwoOneTwoFormation : Formation{
 public class FiveFourOneFormation : Formation{
     public override string Name => "5-4-1";
 
-    public FiveFourOneFormation()
+    public override void InitPositions()
     {
         Positions = new List<PlayerPositions>
         {
@@ -275,7 +279,7 @@ public class FiveFourOneFormation : Formation{
 public class ThreeFourThreeFormation : Formation{
     public override string Name => "3-4-3";
 
-    public ThreeFourThreeFormation()
+    public override void InitPositions()
     {
         Positions = new List<PlayerPositions>
         {
@@ -296,7 +300,7 @@ public class ThreeFourThreeFormation : Formation{
 public class ThreeFourOneTwoFormation : Formation{
     public override string Name => "3-4-1-2";
 
-    public ThreeFourOneTwoFormation()
+    public override void InitPositions()
     {
         Positions = new List<PlayerPositions>
         {
@@ -318,7 +322,7 @@ public class ThreeFourOneTwoFormation : Formation{
 public class AllPosFormation : Formation{
     public override string Name => "111";
 
-    public AllPosFormation()
+    public override void InitPositions()
     {
         Positions = new List<PlayerPositions>
         {

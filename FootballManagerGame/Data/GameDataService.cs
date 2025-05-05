@@ -21,7 +21,7 @@ public class GameDataService
 
     public void SaveGame(GameState gameState, string saveName = "default")
     {
-        Console.WriteLine($"{gameState.PlayerLeague.teams.Count}");
+
         string saveFolder = Path.Combine(_saveDirectory, saveName);
         Directory.CreateDirectory(saveFolder);
 
