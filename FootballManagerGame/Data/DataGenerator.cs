@@ -25,16 +25,92 @@ public class DataGenerator
     }
 
     public static void SimFixture(Fixture fixture){
-        double team1Strength = Math.Pow(fixture.Team1.AvgAttack * 0.33 + fixture.Team1.AvgMidfield * 0.33 + fixture.Team1.AvgDefence * 0.33, 3);
-        double team2Strength = Math.Pow(fixture.Team2.AvgAttack * 0.33 + fixture.Team2.AvgMidfield * 0.33 + fixture.Team2.AvgDefence * 0.33, 3);
+        if (!fixture.Completed){
+            fixture.Team1.CalcAvg();
+            fixture.Team2.CalcAvg();
 
+            fixture.FirstHalfTime = _random.Next(45, 52);
+            fixture.SecondHalfTime = _random.Next(45, 52);
+            int totalTime = fixture.FirstHalfTime + fixture.SecondHalfTime;
 
-        double ratio = team1Strength / (team1Strength + team2Strength);
+            // Use AvgOvr to generate chance caps
+            int team1ChanceCap = (int)(fixture.Team1.AvgOvr * 0.25); // 3% of OVR, tweak this
+            int team2ChanceCap = (int)(fixture.Team2.AvgOvr * 0.25);
 
-        int maxGoals = 8;
-        int team1Score = _random.Next((int)(ratio * maxGoals) + 1);
-        int team2Score = _random.Next((int)((1 - ratio) * maxGoals) + 1);
-        fixture.SetResult(team1Score, team2Score);
+            fixture.team1ChancesCreated = _random.Next(1, team1ChanceCap + 1);
+            fixture.team2ChancesCreated = _random.Next(1, team2ChanceCap + 1);
+
+            // Probabilistic conversion: chances → shot attempts
+            fixture.team1ShotAttempts = Enumerable.Range(0, fixture.team1ChancesCreated)
+                .Count(_ => _random.NextDouble() < 0.85);
+            fixture.team2ShotAttempts = Enumerable.Range(0, fixture.team2ChancesCreated)
+                .Count(_ => _random.NextDouble() < 0.85);
+
+            // Shot attempts → shots on target
+            fixture.team1ShotOnTarget = Enumerable.Range(0, fixture.team1ShotAttempts)
+                .Count(_ => _random.NextDouble() < 0.4);
+            fixture.team2ShotOnTarget = Enumerable.Range(0, fixture.team2ShotAttempts)
+                .Count(_ => _random.NextDouble() < 0.4);
+
+            int ovrDiff = fixture.Team1.AvgOvr - fixture.Team2.AvgOvr;
+            double baseChance = 0.2; // base goal chance for a 50-50 matchup
+            double diffImpact = 0.02; // every point in rating changes goal chance by 1%
+
+            double team1GoalChance = baseChance + (ovrDiff * diffImpact);
+            team1GoalChance = Math.Clamp(team1GoalChance, 0.1, 0.7);
+            double team2GoalChance = baseChance - (ovrDiff * diffImpact);
+            team2GoalChance = Math.Clamp(team2GoalChance, 0.1, 0.7);
+
+            int team1Goals = Enumerable.Range(0, fixture.team1ShotOnTarget)
+                .Count(_ => _random.NextDouble() < team1GoalChance);
+            int team2Goals = Enumerable.Range(0, fixture.team2ShotOnTarget)
+                .Count(_ => _random.NextDouble() < team2GoalChance);
+            
+            List<Goal> goals = new List<Goal>();
+
+            for (int i = 0; i < team1Goals; i++)
+            {
+                int time = _random.Next(fixture.FirstHalfTime + fixture.SecondHalfTime);
+                Player scorer = null;
+                Player assistant = null;
+                var validPos = fixture.Team1.CurrentFormation.Positions
+                    .Where(pos => fixture.Team1.CurrentFormation.Players.ContainsKey(pos))
+                    .ToList();
+                do{
+                    scorer = fixture.Team1.CurrentFormation.Players[validPos[_random.Next(validPos.Count)]];
+                    assistant = fixture.Team1.CurrentFormation.Players[validPos[_random.Next(validPos.Count)]];
+                } while (scorer == null);
+                
+                if (scorer == assistant){
+                    assistant = null;
+                }
+                goals.Add(new Goal{TimeScored = time, PlayerScored = scorer, PlayerAssisted = assistant});
+            }
+
+            for (int i = 0; i < team2Goals; i++)
+            {
+                int time = _random.Next(fixture.FirstHalfTime + fixture.SecondHalfTime);
+                Player scorer = null;
+                Player assistant = null;
+                var validPos = fixture.Team2.CurrentFormation.Positions
+                    .Where(pos => fixture.Team2.CurrentFormation.Players.ContainsKey(pos))
+                    .ToList();
+                do{
+                    scorer = fixture.Team2.CurrentFormation.Players[validPos[_random.Next(validPos.Count)]];
+                    assistant = fixture.Team2.CurrentFormation.Players[validPos[_random.Next(validPos.Count)]];
+                } while (scorer == null);
+                
+                if (scorer == assistant){
+                    assistant = null;
+                }
+                goals.Add(new Goal{TimeScored = time, PlayerScored = scorer, PlayerAssisted = assistant});
+            }
+            List<Goal> goalsSorted = goals.OrderBy(g => g.TimeScored).ToList();
+            fixture.SetResult(team1Goals, team2Goals, goalsSorted);
+        }
+        else{
+            throw new Exception("Fixture already simulated");
+        }
     }
     public static Team GenerateTeam(string name, string nameShort)
     {
@@ -42,7 +118,8 @@ public class DataGenerator
         {
             Name = name,
             NameShort = nameShort,
-            Players = new List<Player>()
+            Players = new List<Player>(),
+            CurrentFormation = new FourFourTwoFormation()
         };
 
 
@@ -63,8 +140,29 @@ public class DataGenerator
             team.Players.Add(GeneratePlayer(PlayerPositions.NONE));
         }
 
-        team.CalcAvg();
         team.CurrentFormation.InitPositions();
+
+        foreach (var pos in team.CurrentFormation.Positions)
+        {
+            Player pl = team.Players
+                .Where(p => p.Positions != null && p.Positions.Count > 0 && !team.CurrentFormation.Players.ContainsValue(p))
+                .Select(p => new {
+                    Player = p,
+                    BestFitScore = p.Positions.Max(plPos => PositionCompatibility(plPos, pos))
+                })
+                .Where(x => x.BestFitScore >= 0)
+                .OrderByDescending(x => x.BestFitScore)
+                .ThenByDescending(x => x.Player.Overall)
+                .Select(x => x.Player)
+                .FirstOrDefault();
+
+            if(pl != null){
+                team.CurrentFormation.Players[pos] = pl;
+                UpdateLiveOverall(pl, pos);
+            }
+            
+        }
+
         return team;
     }
 
@@ -490,8 +588,189 @@ public class DataGenerator
             }
 
         }
+        if (values.Count == 0)
+        {
+            player.LiveOverall = player.Overall / 2; // or 0, or some fallback
+        }
+        else
+        {
+            player.LiveOverall = (int)(player.Overall * values.Max());
+        }
+        
 
-        player.LiveOverall = (int)(player.Overall * values.Max());
+    }
+
+    public static int PositionCompatibility(PlayerPositions playerPos, PlayerPositions targetPos){
+
+        
+        switch (playerPos)
+        {
+            case PlayerPositions.GK:
+                if (targetPos != PlayerPositions.GK){
+                    return -1;
+                }
+                else{
+                    return 1;
+                }
+                
+            case PlayerPositions.CB:
+                if (targetPos == PlayerPositions.CB || targetPos == PlayerPositions.LCB
+                || targetPos == PlayerPositions.RCB){
+                    return 1;
+                }
+                else if (targetPos == PlayerPositions.LB || targetPos == PlayerPositions.RB
+                || targetPos == PlayerPositions.CDM){
+                    return 0;
+                }
+                else{
+                    return -1;
+                }
+                
+            case PlayerPositions.LB:
+                if (targetPos == PlayerPositions.LB || targetPos == PlayerPositions.LWB){
+                    return 1;
+                }
+                else if (targetPos == PlayerPositions.RB || targetPos == PlayerPositions.RWB
+                || targetPos == PlayerPositions.LM || targetPos == PlayerPositions.LCB){
+                    return 0;
+                }
+                else{
+                    return -1;
+                }
+                
+            case PlayerPositions.RB:
+                if (targetPos == PlayerPositions.RB || targetPos == PlayerPositions.RWB){
+                    return 1;
+                }
+                else if (targetPos == PlayerPositions.LB || targetPos == PlayerPositions.LWB
+                || targetPos == PlayerPositions.RM || targetPos == PlayerPositions.RCB ){
+                    return 0;
+                }
+                else{
+                    return -1;
+                }
+                
+            case PlayerPositions.CDM:
+                if (targetPos == PlayerPositions.CDM || targetPos == PlayerPositions.LDM
+                || targetPos == PlayerPositions.RDM || targetPos == PlayerPositions.CM
+                || targetPos == PlayerPositions.LCM || targetPos == PlayerPositions.RCM){
+                    return 1;
+                }
+                else if (targetPos == PlayerPositions.CAM || targetPos == PlayerPositions.LAM
+                || targetPos == PlayerPositions.RAM || targetPos == PlayerPositions.CB
+                || targetPos == PlayerPositions.LCB || targetPos == PlayerPositions.RCB){
+                    return 0;
+                }
+                else{
+                    return -1;
+                }
+                
+            case PlayerPositions.CM:
+                if (targetPos == PlayerPositions.CM || targetPos == PlayerPositions.LCM
+                || targetPos == PlayerPositions.RCM || targetPos == PlayerPositions.CDM
+                || targetPos == PlayerPositions.LDM || targetPos == PlayerPositions.RDM
+                || targetPos == PlayerPositions.CAM || targetPos == PlayerPositions.LAM
+                || targetPos == PlayerPositions.RAM){
+                    return 1;
+                }
+                else if (targetPos == PlayerPositions.LM || targetPos == PlayerPositions.RM){
+                    return 0;
+                }
+                else{
+                    return -1;
+                }
+                
+            case PlayerPositions.CAM:
+                if (targetPos == PlayerPositions.CAM || targetPos == PlayerPositions.LAM
+                || targetPos == PlayerPositions.RAM || targetPos == PlayerPositions.CM
+                || targetPos == PlayerPositions.LCM || targetPos == PlayerPositions.RCM){
+                    return 1;
+                }
+                else if (targetPos == PlayerPositions.CDM || targetPos == PlayerPositions.LDM
+                || targetPos == PlayerPositions.RDM || targetPos == PlayerPositions.F9){
+                    return 0;
+                }
+                else{
+                    return -1;
+                }
+                
+            case PlayerPositions.LM:
+                if (targetPos == PlayerPositions.LM || targetPos == PlayerPositions.LW
+                || targetPos == PlayerPositions.LWB){
+                    return 1;
+                }
+                else if (targetPos == PlayerPositions.RM || targetPos == PlayerPositions.RW
+                || targetPos == PlayerPositions.RWB || targetPos == PlayerPositions.LB
+                || targetPos == PlayerPositions.LCM || targetPos == PlayerPositions.LAM){
+                    return 0;
+                }
+                else{
+                    return -1;
+                }
+                
+            case PlayerPositions.RM:
+                if (targetPos == PlayerPositions.RM || targetPos == PlayerPositions.RW
+                || targetPos == PlayerPositions.RWB){
+                    return 1;
+                }
+                else if (targetPos == PlayerPositions.LM || targetPos == PlayerPositions.LW
+                || targetPos == PlayerPositions.LWB || targetPos == PlayerPositions.RB
+                || targetPos == PlayerPositions.RCM || targetPos == PlayerPositions.RAM){
+                    return 0;
+                }
+                else{
+                    return -1;
+                }
+                
+            case PlayerPositions.F9:
+                if (targetPos == PlayerPositions.F9 || targetPos == PlayerPositions.CF
+                || targetPos == PlayerPositions.LF || targetPos == PlayerPositions.RF){
+                    return 1;
+                }
+                else if (targetPos == PlayerPositions.CAM || targetPos == PlayerPositions.LAM
+                || targetPos == PlayerPositions.RAM){
+                    return 0;
+                }
+                else{
+                    return -1;
+                }
+                
+            case PlayerPositions.LW:
+                if (targetPos == PlayerPositions.LW || targetPos == PlayerPositions.LM){
+                    return 1;
+                }
+                else if (targetPos == PlayerPositions.LF || targetPos == PlayerPositions.LAM
+                || targetPos == PlayerPositions.RW || targetPos == PlayerPositions.LWB){
+                   return 0;
+                }
+                else{
+                    return -1;
+                }
+                
+            case PlayerPositions.RW:
+                if (targetPos == PlayerPositions.RW || targetPos == PlayerPositions.RM){
+                    return 1;
+                }
+                else if (targetPos == PlayerPositions.RF || targetPos == PlayerPositions.RAM
+                || targetPos == PlayerPositions.LW || targetPos == PlayerPositions.RWB){
+                    return 0;
+                }
+                else{
+                    return -1;
+                }
+                
+            case PlayerPositions.CF:
+                if (targetPos == PlayerPositions.CF || targetPos == PlayerPositions.LF
+                || targetPos == PlayerPositions.RF || targetPos == PlayerPositions.F9){
+                    return 1;
+                }
+                else{
+                    return -1;
+                }
+
+            default:
+                return -1;
+        }
 
     }
 }

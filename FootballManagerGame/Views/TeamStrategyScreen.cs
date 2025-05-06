@@ -49,6 +49,8 @@ public class TeamStrategyScreen : Screen
 
     public override void Update(GameTime gameTime)
     {
+        _gameState.TeamSelected.CalcAvg();
+        
     }
 
     public override void Draw(SpriteBatch spriteBatch)

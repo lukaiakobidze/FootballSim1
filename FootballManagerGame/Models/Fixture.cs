@@ -12,13 +12,20 @@ public class Fixture{
     public League League { get; set; }
     public DateTime Date { get; set; }
     public Team Winner { get; set; }
-    public bool ExtraTime { get; set; }
+    public int FirstHalfTime { get; set; }
+    public int SecondHalfTime { get; set; }
     public bool Completed { get; set; }
     public List<int> Result { get; set; } = new List<int>();
+    public List<Goal> Goals { get; set; } = new List<Goal>();
+    public int team1ChancesCreated { get; set; }
+    public int team2ChancesCreated { get; set; }
+    public int team1ShotAttempts { get; set; }
+    public int team2ShotAttempts { get; set; }
+    public int team1ShotOnTarget { get; set; }
+    public int team2ShotOnTarget { get; set; }
 
     public Fixture() {
         Winner = null;
-        ExtraTime = false;
         Completed = false;
     }
         
@@ -31,10 +38,11 @@ public class Fixture{
         }
     }
 
-    public void SetResult(int score1, int score2){
+    public void SetResult(int score1, int score2, List<Goal> goals){
         if (Completed != true){
             Result.Add(score1);
             Result.Add(score2);
+            Goals = goals;
             Completed = true;
             if (score1 > score2){
                 Winner = Team1;

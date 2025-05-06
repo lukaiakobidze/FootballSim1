@@ -40,6 +40,14 @@ public class CareerMenuScreen : Screen
 
     public override void Update(GameTime gameTime)
     {
+
+        // if(_gameState.CurrentDate == _nextGame.Date){
+        //     _strings[0] = "Sim Match";
+        // }
+        // else{
+        //     _strings[0] = "Advance";
+        // }
+
     }
 
     public override void Draw(SpriteBatch spriteBatch)
@@ -86,47 +94,57 @@ public class CareerMenuScreen : Screen
 
         if (inputState.IsKeyPressed(Keys.Enter))
         {
-            if (_selectionIndex == 0)
+            if (_strings[_selectionIndex] == "Advance")
             {
                 if(_gameState.PlayerLeague.AllFixtures.Any(matchday => matchday.Any(f => f.Date == _gameState.CurrentDate))){
                     var todaysFixtures = _gameState.PlayerLeague.AllFixtures
                         .FirstOrDefault(matchday => matchday.Any(f => f.Date == _gameState.CurrentDate));
                         foreach (var fixture in todaysFixtures)
                         {
-                            DataGenerator.SimFixture(fixture);
+                            if(fixture.Team1 != _gameState.PlayerTeam && fixture.Team2 != _gameState.PlayerTeam){
+                               
+                            }
+                             DataGenerator.SimFixture(fixture);
                         }
                     _gameState.CurrentDate = _gameState.CurrentDate.AddDays(1);
+                    SetNextGame();
                 }
                 else{
                     _gameState.CurrentDate = _gameState.CurrentDate.AddDays(1);
                 }
-                SetNextGame();
+                
+                // ScreenManager.Instance.AddScreen("LiveSim", new LiveSimScreen(_font, _graphics, _gameDataService, _gameState, _shapes, _textures));
+                // ScreenManager.Instance.ChangeScreen("LiveSim");
             }
-            else if (_selectionIndex == 1)
+            else if (_strings[_selectionIndex] == "Advanceee")
+            {
+                _gameState.CurrentDate = _gameState.CurrentDate.AddDays(1);
+            }
+            else if (_strings[_selectionIndex] == "Team Tactics")
             {
                 _gameState.TeamSelected = _gameState.PlayerTeam;
                 ScreenManager.Instance.AddScreen("TeamStrategyView", new TeamStrategyScreen(_gameState, _font, _graphics, _shapes, _textures));
                 ScreenManager.Instance.ChangeScreen("TeamStrategyView");
             }
-            else if (_selectionIndex == 2)
+            else if (_strings[_selectionIndex] == "Player Managment")
             {
                 _gameState.TeamSelected = _gameState.PlayerTeam;
                 ScreenManager.Instance.AddScreen("TeamView", new TeamViewScreen(_gameState, _font, _graphics, "CareerMenu"));
                 ScreenManager.Instance.ChangeScreen("TeamView");
             }
-            else if (_selectionIndex == 3)
+            else if (_strings[_selectionIndex] == "League Table")
             {
                 _gameState.LeagueSelected = _gameState.PlayerLeague;
                 ScreenManager.Instance.AddScreen("TableView", new TableViewScreen(_font, _graphics, _gameDataService, _gameState));
                 ScreenManager.Instance.ChangeScreen("TableView");
             }
-            else if (_selectionIndex == 4)
+            else if (_strings[_selectionIndex] == "All Fixtures")
             {
                 _gameState.LeagueSelected = _gameState.PlayerLeague;
                 ScreenManager.Instance.AddScreen("FixturesView", new FixturesViewScreen(_font, _graphics, _gameState));
                 ScreenManager.Instance.ChangeScreen("FixturesView");
             }
-            else if (_selectionIndex == _strings.Count - 1)
+            else if (_strings[_selectionIndex] == "Main Menu")
             {
                 _gameDataService.SaveGame(_gameState, $"Save{_gameState.SaveSlot}");
                 ScreenManager.Instance.ChangeScreen("MainMenu");
