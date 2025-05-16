@@ -10,24 +10,39 @@ public class Formation{
 
     public List<PlayerPositions> Positions { get; set;}
     public Dictionary<PlayerPositions, Player> Players { get; set; }
+    public Dictionary<int, Player> Bench { get; set; }
     public virtual string Name => "Custom";
     public Formation(){
         Positions = new List<PlayerPositions>();
         Players = new Dictionary<PlayerPositions, Player>();
+        Bench = new Dictionary<int, Player>();
+    }
+
+    public void AddPlayerToBench(Player player, int index)
+    {
+        if (index < 7 && index >= 0)
+        {
+            Bench[index] = player;
+        }
+        else
+        {
+            throw new Exception("Index our of Bench range!");
+        }
         
     }
 
-    public void AssignPlayerToPosition(Player player, PlayerPositions position){
+    public void AssignPlayerToPosition(Player player, PlayerPositions position)
+    {
 
-            if (Positions.Contains(position))
-            {
-                Players[position] = player;
-            }
-            else
-            {
-                throw new ArgumentException($"Position {position} not in formation.");
-            }
+        if (Positions.Contains(position))
+        {
+            Players[position] = player;
         }
+        else
+        {
+            throw new ArgumentException($"Position {position} not in formation.");
+        }
+    }
 
     public void RemoveAllPlayers(){
         Players = new Dictionary<PlayerPositions, Player>();

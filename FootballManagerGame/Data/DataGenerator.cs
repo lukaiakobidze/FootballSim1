@@ -12,6 +12,7 @@ namespace FootballManagerGame.Data;
 public class DataGenerator
 {
     private static Random _random = new Random();
+    public static Random Random = new Random();
 
     public static void Shuffle<T>(List<T> list)
     {
@@ -24,94 +25,320 @@ public class DataGenerator
         }
     }
 
-    public static void SimFixture(Fixture fixture){
-        if (!fixture.Completed){
+    public static void SimFixture(Fixture fixture)
+    {
+        if (fixture.Team1.CurrentFormation.IsComplete() && fixture.Team2.CurrentFormation.IsComplete())
+        {
+            if (!fixture.Completed)
+            {
+                fixture.Team1.CalcAvg();
+                fixture.Team2.CalcAvg();
+
+                fixture.FirstHalfTime = _random.Next(45, 52);
+                fixture.SecondHalfTime = _random.Next(45, 52);
+                int totalTime = fixture.FirstHalfTime + fixture.SecondHalfTime;
+
+
+                int team1ChanceCap = (int)(fixture.Team1.AvgOvr * 0.25);
+                int team2ChanceCap = (int)(fixture.Team2.AvgOvr * 0.25);
+
+                fixture.team1ChancesCreated = _random.Next(1, team1ChanceCap + 1);
+                fixture.team2ChancesCreated = _random.Next(1, team2ChanceCap + 1);
+
+
+                fixture.team1ShotAttempts = Enumerable.Range(0, fixture.team1ChancesCreated)
+                    .Count(_ => _random.NextDouble() < 0.85);
+                fixture.team2ShotAttempts = Enumerable.Range(0, fixture.team2ChancesCreated)
+                    .Count(_ => _random.NextDouble() < 0.85);
+
+
+                fixture.team1ShotOnTarget = Enumerable.Range(0, fixture.team1ShotAttempts)
+                    .Count(_ => _random.NextDouble() < 0.4);
+                fixture.team2ShotOnTarget = Enumerable.Range(0, fixture.team2ShotAttempts)
+                    .Count(_ => _random.NextDouble() < 0.4);
+
+                int ovrDiff = fixture.Team1.AvgOvr - fixture.Team2.AvgOvr;
+                double baseChance = 0.2;
+                double diffImpact = 0.02;
+
+                double team1GoalChance = baseChance + (ovrDiff * diffImpact);
+                team1GoalChance = Math.Clamp(team1GoalChance, 0.1, 0.7);
+                double team2GoalChance = baseChance - (ovrDiff * diffImpact);
+                team2GoalChance = Math.Clamp(team2GoalChance, 0.1, 0.7);
+
+                int team1Goals = Enumerable.Range(0, fixture.team1ShotOnTarget)
+                    .Count(_ => _random.NextDouble() < team1GoalChance);
+                int team2Goals = Enumerable.Range(0, fixture.team2ShotOnTarget)
+                    .Count(_ => _random.NextDouble() < team2GoalChance);
+
+                List<Goal> goals = new List<Goal>();
+
+                for (int i = 0; i < team1Goals; i++)
+                {
+                    int time = _random.Next(fixture.FirstHalfTime + fixture.SecondHalfTime);
+                    Player scorer = null;
+                    Player assistant = null;
+                    var validPos = fixture.Team1.CurrentFormation.Positions
+                        .Where(pos => fixture.Team1.CurrentFormation.Players.ContainsKey(pos))
+                        .ToList();
+                    do
+                    {
+                        scorer = fixture.Team1.CurrentFormation.Players[validPos[_random.Next(validPos.Count)]];
+                        assistant = fixture.Team1.CurrentFormation.Players[validPos[_random.Next(validPos.Count)]];
+                    } while (scorer == null);
+
+                    if (scorer == assistant)
+                    {
+                        assistant = null;
+                    }
+                    goals.Add(new Goal { TimeScored = time, PlayerScored = scorer, PlayerAssisted = assistant });
+                }
+
+                for (int i = 0; i < team2Goals; i++)
+                {
+                    int time = _random.Next(fixture.FirstHalfTime + fixture.SecondHalfTime);
+                    Player scorer = null;
+                    Player assistant = null;
+                    var validPos = fixture.Team2.CurrentFormation.Positions
+                        .Where(pos => fixture.Team2.CurrentFormation.Players.ContainsKey(pos))
+                        .ToList();
+                    do
+                    {
+                        scorer = fixture.Team2.CurrentFormation.Players[validPos[_random.Next(validPos.Count)]];
+                        assistant = fixture.Team2.CurrentFormation.Players[validPos[_random.Next(validPos.Count)]];
+                    } while (scorer == null);
+
+                    if (scorer == assistant)
+                    {
+                        assistant = null;
+                    }
+                    goals.Add(new Goal { TimeScored = time, PlayerScored = scorer, PlayerAssisted = assistant });
+                }
+                List<Goal> goalsSorted = goals.OrderBy(g => g.TimeScored).ToList();
+                fixture.SetResult(team1Goals, team2Goals, goalsSorted);
+                fixture.AddPoints();
+            }
+            else
+            {
+                throw new Exception("Fixture already simulated");
+            }
+        }
+        else
+        {
+            throw new Exception($"Team formations arent complete!{fixture.Team1.Name} {fixture.Team2.Name}");
+        }
+    }
+
+    public static void SimMinute(Fixture fixture, int minute, bool isLast)
+    {
+        if (fixture.Team1.CurrentFormation.IsComplete() && fixture.Team2.CurrentFormation.IsComplete())
+        {
             fixture.Team1.CalcAvg();
             fixture.Team2.CalcAvg();
 
-            fixture.FirstHalfTime = _random.Next(45, 52);
-            fixture.SecondHalfTime = _random.Next(45, 52);
-            int totalTime = fixture.FirstHalfTime + fixture.SecondHalfTime;
-
-            // Use AvgOvr to generate chance caps
-            int team1ChanceCap = (int)(fixture.Team1.AvgOvr * 0.25); // 3% of OVR, tweak this
-            int team2ChanceCap = (int)(fixture.Team2.AvgOvr * 0.25);
-
-            fixture.team1ChancesCreated = _random.Next(1, team1ChanceCap + 1);
-            fixture.team2ChancesCreated = _random.Next(1, team2ChanceCap + 1);
-
-            // Probabilistic conversion: chances → shot attempts
-            fixture.team1ShotAttempts = Enumerable.Range(0, fixture.team1ChancesCreated)
-                .Count(_ => _random.NextDouble() < 0.85);
-            fixture.team2ShotAttempts = Enumerable.Range(0, fixture.team2ChancesCreated)
-                .Count(_ => _random.NextDouble() < 0.85);
-
-            // Shot attempts → shots on target
-            fixture.team1ShotOnTarget = Enumerable.Range(0, fixture.team1ShotAttempts)
-                .Count(_ => _random.NextDouble() < 0.4);
-            fixture.team2ShotOnTarget = Enumerable.Range(0, fixture.team2ShotAttempts)
-                .Count(_ => _random.NextDouble() < 0.4);
-
             int ovrDiff = fixture.Team1.AvgOvr - fixture.Team2.AvgOvr;
-            double baseChance = 0.2; // base goal chance for a 50-50 matchup
-            double diffImpact = 0.02; // every point in rating changes goal chance by 1%
 
-            double team1GoalChance = baseChance + (ovrDiff * diffImpact);
-            team1GoalChance = Math.Clamp(team1GoalChance, 0.1, 0.7);
-            double team2GoalChance = baseChance - (ovrDiff * diffImpact);
-            team2GoalChance = Math.Clamp(team2GoalChance, 0.1, 0.7);
-
-            int team1Goals = Enumerable.Range(0, fixture.team1ShotOnTarget)
-                .Count(_ => _random.NextDouble() < team1GoalChance);
-            int team2Goals = Enumerable.Range(0, fixture.team2ShotOnTarget)
-                .Count(_ => _random.NextDouble() < team2GoalChance);
-            
-            List<Goal> goals = new List<Goal>();
-
-            for (int i = 0; i < team1Goals; i++)
+            if (_random.Next(10) < 4)
             {
-                int time = _random.Next(fixture.FirstHalfTime + fixture.SecondHalfTime);
-                Player scorer = null;
-                Player assistant = null;
-                var validPos = fixture.Team1.CurrentFormation.Positions
-                    .Where(pos => fixture.Team1.CurrentFormation.Players.ContainsKey(pos))
-                    .ToList();
-                do{
-                    scorer = fixture.Team1.CurrentFormation.Players[validPos[_random.Next(validPos.Count)]];
-                    assistant = fixture.Team1.CurrentFormation.Players[validPos[_random.Next(validPos.Count)]];
-                } while (scorer == null);
-                
-                if (scorer == assistant){
-                    assistant = null;
+                int rand = _random.Next(100);
+                if (rand <= 50 + (ovrDiff * 2))
+                {
+                    fixture.team1ChancesCreated += 1;
+                    if (_random.Next(10) < 7)
+                    {
+                        fixture.team1ShotAttempts += 1;
+                        if (_random.Next(10) < 4)
+                        {
+                            fixture.team1ShotOnTarget += 1;
+                            if (_random.Next(10) < 4)
+                            {
+                                Player scorer = PickGoalScorer(fixture.Team1.CurrentFormation.Players);
+                                Player assistant = PickGoalAssistant(fixture.Team1.CurrentFormation.Players, scorer);
+
+                                Goal goal = new Goal()
+                                {
+                                    TimeScored = minute,
+                                    PlayerScored = scorer,
+                                    PlayerAssisted = assistant,
+                                    IsPenalty = false
+                                };
+
+                                fixture.AddGoal(goal);
+                            }
+                        }
+                    }
                 }
-                goals.Add(new Goal{TimeScored = time, PlayerScored = scorer, PlayerAssisted = assistant});
+                else
+                {
+                    fixture.team2ChancesCreated += 1;
+                    if (_random.Next(10) < 7)
+                    {
+                        fixture.team2ShotAttempts += 1;
+                        if (_random.Next(10) < 4)
+                        {
+                            fixture.team2ShotOnTarget += 1;
+                            if (_random.Next(10) < 4)
+                            {
+                                Player scorer = PickGoalScorer(fixture.Team2.CurrentFormation.Players);
+                                Player assistant = PickGoalAssistant(fixture.Team2.CurrentFormation.Players, scorer);
+
+                                Goal goal = new Goal()
+                                {
+                                    TimeScored = minute,
+                                    PlayerScored = scorer,
+                                    PlayerAssisted = assistant,
+                                    IsPenalty = false
+                                };
+
+                                fixture.AddGoal(goal);
+                            }
+                        }
+                    }
+                }
             }
 
-            for (int i = 0; i < team2Goals; i++)
+            if (isLast)
             {
-                int time = _random.Next(fixture.FirstHalfTime + fixture.SecondHalfTime);
-                Player scorer = null;
-                Player assistant = null;
-                var validPos = fixture.Team2.CurrentFormation.Positions
-                    .Where(pos => fixture.Team2.CurrentFormation.Players.ContainsKey(pos))
-                    .ToList();
-                do{
-                    scorer = fixture.Team2.CurrentFormation.Players[validPos[_random.Next(validPos.Count)]];
-                    assistant = fixture.Team2.CurrentFormation.Players[validPos[_random.Next(validPos.Count)]];
-                } while (scorer == null);
-                
-                if (scorer == assistant){
-                    assistant = null;
-                }
-                goals.Add(new Goal{TimeScored = time, PlayerScored = scorer, PlayerAssisted = assistant});
+                fixture.Completed = true;
+                fixture.AddPoints();
             }
-            List<Goal> goalsSorted = goals.OrderBy(g => g.TimeScored).ToList();
-            fixture.SetResult(team1Goals, team2Goals, goalsSorted);
         }
-        else{
-            throw new Exception("Fixture already simulated");
+        else
+        {
+            throw new Exception("Team formations arent complete!");
         }
     }
+
+    public static Player PickGoalScorer(Dictionary<PlayerPositions, Player> players) {
+
+        Dictionary<PlayerPositions, double> positionMultipliers = new Dictionary<PlayerPositions, double>
+        {
+            {PlayerPositions.GK, 0.1},
+            {PlayerPositions.CB, 0.4},
+            {PlayerPositions.LB, 0.5},
+            {PlayerPositions.LWB, 0.8},
+            {PlayerPositions.RB, 0.5},
+            {PlayerPositions.RWB, 0.8},
+            {PlayerPositions.CDM, 0.4},
+            {PlayerPositions.CM, 1.0},
+            {PlayerPositions.CAM, 1.9},
+            {PlayerPositions.LM, 1.4},
+            {PlayerPositions.LW, 2.0},
+            {PlayerPositions.RM, 1.4},
+            {PlayerPositions.RW, 2.0},
+            {PlayerPositions.F9, 2.0},
+            {PlayerPositions.CF, 2.6},
+            {PlayerPositions.LCB, 0.4},
+            {PlayerPositions.RCB, 0.4},
+            {PlayerPositions.LCM, 1.0},
+            {PlayerPositions.RCM, 1.0},
+            {PlayerPositions.LDM, 0.4},
+            {PlayerPositions.RDM, 0.4},
+            {PlayerPositions.LAM, 1.9},
+            {PlayerPositions.RAM, 1.9},
+            {PlayerPositions.LF, 2.6},
+            {PlayerPositions.RF, 2.6},
+        };
+
+        var playerList = players.Values.ToList();
+
+        List<double> weights = players.Select(kvp =>
+        {
+            PlayerPositions currentPosition = kvp.Key;
+            Player player = kvp.Value;
+
+            double mult = positionMultipliers.ContainsKey(currentPosition)
+                        ? positionMultipliers[currentPosition]
+                        : 0.5;
+
+            return player.Overall * mult;
+
+        }).ToList();
+        
+        double totalWeight = weights.Sum();
+        double randValue = _random.NextDouble() * totalWeight;
+
+        double cumulative = 0;
+        for (int i = 0; i < playerList.Count; i++)
+        {
+            cumulative += weights[i];
+            if (randValue <= cumulative)
+                return playerList[i];
+        }
+
+        return playerList.Last();
+    }
+
+
+    public static Player PickGoalAssistant(Dictionary<PlayerPositions, Player> players, Player scorer) {
+
+        Dictionary<PlayerPositions, double> positionMultipliers = new Dictionary<PlayerPositions, double>
+        {
+            {PlayerPositions.GK, 0.2},
+            {PlayerPositions.CB, 0.4},
+            {PlayerPositions.LB, 0.8},
+            {PlayerPositions.LWB, 1.2},
+            {PlayerPositions.RB, 0.8},
+            {PlayerPositions.RWB, 1.2},
+            {PlayerPositions.CDM, 1.0},
+            {PlayerPositions.CM, 1.5},
+            {PlayerPositions.CAM, 2.2},
+            {PlayerPositions.LM, 2.0},
+            {PlayerPositions.LW, 2.8},
+            {PlayerPositions.RM, 2.0},
+            {PlayerPositions.RW, 2.8},
+            {PlayerPositions.F9, 2.8},
+            {PlayerPositions.CF, 2.6},
+            {PlayerPositions.LCB, 0.4},
+            {PlayerPositions.RCB, 0.4},
+            {PlayerPositions.LCM, 1.5},
+            {PlayerPositions.RCM, 1.5},
+            {PlayerPositions.LDM, 1.0},
+            {PlayerPositions.RDM, 1.0},
+            {PlayerPositions.LAM, 2.2},
+            {PlayerPositions.RAM, 2.2},
+            {PlayerPositions.LF, 2.6},
+            {PlayerPositions.RF, 2.6},
+        };
+        
+        var playerList = players.Values.ToList();
+        
+
+        List<double> weights = players.Select(kvp =>
+        {
+            PlayerPositions currentPosition = kvp.Key;
+            Player player = kvp.Value;
+
+
+
+            double mult = positionMultipliers.ContainsKey(currentPosition)
+                        ? positionMultipliers[currentPosition]
+                        : 0.5;
+
+            if (player == scorer)
+            {
+                return 0;
+            }
+
+            return player.Overall * mult;
+
+        }).ToList();
+        
+        double totalWeight = weights.Sum();
+        double randValue = _random.NextDouble() * totalWeight;
+
+        double cumulative = 0;
+        for (int i = 0; i < playerList.Count; i++)
+        {
+            cumulative += weights[i];
+            if (randValue <= cumulative)
+                return playerList[i];
+        }
+
+        return playerList.Last();
+    }
+
+
     public static Team GenerateTeam(string name, string nameShort)
     {
         Team team = new Team
@@ -124,20 +351,20 @@ public class DataGenerator
 
 
         int playerCount = _random.Next(7, 12);
-        team.Players.Add(GeneratePlayer(PlayerPositions.GK));
-        team.Players.Add(GeneratePlayer(PlayerPositions.CB));
-        team.Players.Add(GeneratePlayer(PlayerPositions.CB));
-        team.Players.Add(GeneratePlayer(PlayerPositions.LB));
-        team.Players.Add(GeneratePlayer(PlayerPositions.RB));
-        team.Players.Add(GeneratePlayer(PlayerPositions.CM));
-        team.Players.Add(GeneratePlayer(PlayerPositions.CDM));
-        team.Players.Add(GeneratePlayer(PlayerPositions.CAM));
-        team.Players.Add(GeneratePlayer(PlayerPositions.LW));
-        team.Players.Add(GeneratePlayer(PlayerPositions.RW));
-        team.Players.Add(GeneratePlayer(PlayerPositions.CF));
+        team.Players.Add(GeneratePlayer(PlayerPositions.GK, team));
+        team.Players.Add(GeneratePlayer(PlayerPositions.CB, team));
+        team.Players.Add(GeneratePlayer(PlayerPositions.CB, team));
+        team.Players.Add(GeneratePlayer(PlayerPositions.LB, team));
+        team.Players.Add(GeneratePlayer(PlayerPositions.RB, team));
+        team.Players.Add(GeneratePlayer(PlayerPositions.CM, team));
+        team.Players.Add(GeneratePlayer(PlayerPositions.CDM, team));
+        team.Players.Add(GeneratePlayer(PlayerPositions.CAM, team));
+        team.Players.Add(GeneratePlayer(PlayerPositions.LW, team));
+        team.Players.Add(GeneratePlayer(PlayerPositions.RW, team));
+        team.Players.Add(GeneratePlayer(PlayerPositions.CF, team));
         for (int i = 0; i < playerCount; i++)
         {
-            team.Players.Add(GeneratePlayer(PlayerPositions.NONE));
+            team.Players.Add(GeneratePlayer(PlayerPositions.NONE, team));
         }
 
         team.CurrentFormation.InitPositions();
@@ -146,7 +373,8 @@ public class DataGenerator
         {
             Player pl = team.Players
                 .Where(p => p.Positions != null && p.Positions.Count > 0 && !team.CurrentFormation.Players.ContainsValue(p))
-                .Select(p => new {
+                .Select(p => new
+                {
                     Player = p,
                     BestFitScore = p.Positions.Max(plPos => PositionCompatibility(plPos, pos))
                 })
@@ -156,17 +384,22 @@ public class DataGenerator
                 .Select(x => x.Player)
                 .FirstOrDefault();
 
-            if(pl != null){
+            if (pl != null)
+            {
                 team.CurrentFormation.Players[pos] = pl;
                 UpdateLiveOverall(pl, pos);
             }
-            
+            else
+            {
+                team.CurrentFormation.Players[pos] = team.Players.Where(p => !team.CurrentFormation.Players.ContainsValue(p)).FirstOrDefault();
+            }
+
         }
 
         return team;
     }
 
-    public static Player GeneratePlayer(PlayerPositions pos)
+    public static Player GeneratePlayer(PlayerPositions pos, Team team)
     {
         string[] firstNames = { "John", "David", "Michael", "James", "Robert", "William", "Carlos", "Juan", "Pedro",
         "Antonio", "Cole", "Jimmy", "Charlie", "Tom", "Declan", "Loyd", "Carl", "Rick", "Wayne", "Danny", "Timmy",
@@ -206,9 +439,15 @@ public class DataGenerator
 
             do
             {
-                primaryPosition = (PlayerPositions)_random.Next(Enum.GetValues(typeof(PlayerPositions)).Length - 10);
+                primaryPosition = (PlayerPositions)_random.Next(Enum.GetValues(typeof(PlayerPositions)).Length);
             }
-            while (primaryPosition == PlayerPositions.NONE);
+            while (
+                primaryPosition == PlayerPositions.NONE || primaryPosition == PlayerPositions.LCB || primaryPosition == PlayerPositions.RCB
+                || primaryPosition == PlayerPositions.LDM || primaryPosition == PlayerPositions.RDM || primaryPosition == PlayerPositions.LCM
+                || primaryPosition == PlayerPositions.RCM || primaryPosition == PlayerPositions.LAM || primaryPosition == PlayerPositions.RAM
+                || primaryPosition == PlayerPositions.LF || primaryPosition == PlayerPositions.RF 
+            );
+
             player.Positions.Add(primaryPosition);
         }
         else
@@ -222,8 +461,15 @@ public class DataGenerator
         {
             do
             {
-                secondaryPosition = (PlayerPositions)_random.Next(Enum.GetValues(typeof(PlayerPositions)).Length - 10);
-            } while (secondaryPosition == primaryPosition || secondaryPosition == PlayerPositions.GK || secondaryPosition == PlayerPositions.NONE);
+                secondaryPosition = (PlayerPositions)_random.Next(Enum.GetValues(typeof(PlayerPositions)).Length);
+            }
+            while (
+                secondaryPosition == primaryPosition || secondaryPosition == PlayerPositions.GK || secondaryPosition == PlayerPositions.NONE
+                || secondaryPosition == PlayerPositions.LCB || secondaryPosition == PlayerPositions.RCB
+                || secondaryPosition == PlayerPositions.LDM || secondaryPosition == PlayerPositions.RDM || secondaryPosition == PlayerPositions.LCM
+                || secondaryPosition == PlayerPositions.RCM || secondaryPosition == PlayerPositions.LAM || secondaryPosition == PlayerPositions.RAM
+                || secondaryPosition == PlayerPositions.LF || secondaryPosition == PlayerPositions.RF
+            );
 
             player.Positions.Add(secondaryPosition);
         }
@@ -305,6 +551,8 @@ public class DataGenerator
             }
         }
         player.Overall = (int)(ovr / cnt);
+
+        player.Team = team;
 
         return player;
     }
@@ -407,6 +655,7 @@ public class DataGenerator
 
             teamName = $"{Part1}{Part2} {Part3}";
             string teamNameShort = $"{Part1[0]}{Part2[0]}{Part3[0]}";
+            teamNameShort = teamNameShort.ToUpper();
             teams.Add(GenerateTeam(teamName, teamNameShort));
         }
 
@@ -460,6 +709,30 @@ public class DataGenerator
                     }
                     else if (position == PlayerPositions.LB || position == PlayerPositions.LWB
                     || position == PlayerPositions.RM || position == PlayerPositions.RCB ){
+                        values.Add(0.8);
+                    }
+                    else{
+                        values.Add(0.5);
+                    }
+                    break;
+                case PlayerPositions.RWB:
+                    if (position == PlayerPositions.RB || position == PlayerPositions.RWB){
+                        values.Add(1.0);
+                    }
+                    else if (position == PlayerPositions.LB || position == PlayerPositions.LWB
+                    || position == PlayerPositions.RM || position == PlayerPositions.RCB ){
+                        values.Add(0.8);
+                    }
+                    else{
+                        values.Add(0.5);
+                    }
+                    break;
+                case PlayerPositions.LWB:
+                    if (position == PlayerPositions.LWB || position == PlayerPositions.LB){
+                        values.Add(1.0);
+                    }
+                    else if (position == PlayerPositions.RB || position == PlayerPositions.RWB
+                    || position == PlayerPositions.LM || position == PlayerPositions.LW ){
                         values.Add(0.8);
                     }
                     else{
@@ -602,7 +875,6 @@ public class DataGenerator
 
     public static int PositionCompatibility(PlayerPositions playerPos, PlayerPositions targetPos){
 
-        
         switch (playerPos)
         {
             case PlayerPositions.GK:
@@ -637,7 +909,28 @@ public class DataGenerator
                 else{
                     return -1;
                 }
-                
+            case PlayerPositions.LWB:
+                if (targetPos == PlayerPositions.LB || targetPos == PlayerPositions.LWB){
+                    return 1;
+                }
+                else if (targetPos == PlayerPositions.RB || targetPos == PlayerPositions.RWB
+                || targetPos == PlayerPositions.LM || targetPos == PlayerPositions.LW){
+                    return 0;
+                }
+                else{
+                    return -1;
+                }
+            case PlayerPositions.RWB:
+                if (targetPos == PlayerPositions.RWB || targetPos == PlayerPositions.RB){
+                    return 1;
+                }
+                else if (targetPos == PlayerPositions.LB || targetPos == PlayerPositions.LWB
+                || targetPos == PlayerPositions.RW || targetPos == PlayerPositions.RM){
+                    return 0;
+                }
+                else{
+                    return -1;
+                }
             case PlayerPositions.RB:
                 if (targetPos == PlayerPositions.RB || targetPos == PlayerPositions.RWB){
                     return 1;

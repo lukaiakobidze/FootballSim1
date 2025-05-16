@@ -13,7 +13,7 @@ public class Player
     public List<PlayerPositions> Positions { get; set; } = new List<PlayerPositions>();
     public int Overall { get; set; }
     public int LiveOverall { get; set; }
-
+    public Team Team { get; set; }
 
     public PlayerPositions PrimaryPosition => Positions.Count > 0 ? Positions[0] : PlayerPositions.CM;
 
