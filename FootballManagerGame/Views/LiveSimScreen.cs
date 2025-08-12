@@ -88,17 +88,29 @@ public class LiveSimScreen : Screen
 
         spriteBatch.DrawString(_font, $"{_fixture.Team1.Name}", new Vector2(_graphics.GraphicsDevice.Viewport.Width / 2 - 400, 150), Color.White, 0f,
             _font.MeasureString($"{_fixture.Team1.Name}") / 2, 1, SpriteEffects.None, 0f);
-        spriteBatch.DrawString(_font, $"{_fixture.Result[0]}", new Vector2(_graphics.GraphicsDevice.Viewport.Width / 2 - 200, 150), Color.White, 0f,
+        spriteBatch.DrawString(_font, $"{_fixture.Result[0]}", new Vector2(_graphics.GraphicsDevice.Viewport.Width / 2 - 250, 150), Color.White, 0f,
             _font.MeasureString($"{_fixture.Result[0]}") / 2, 1, SpriteEffects.None, 0f);
 
-
+        int y = 200;
+        foreach (var pos in _fixture.Team1.CurrentFormation.Positions)
+        {
+            spriteBatch.DrawString(_font, $"{_fixture.Team1.CurrentFormation.Players[pos].Name}", new Vector2(_graphics.GraphicsDevice.Viewport.Width / 2 - 400, y), Color.White, 0f,
+                _font.MeasureString($"{_fixture.Team1.CurrentFormation.Players[pos].Name}") / 2, 1, SpriteEffects.None, 0f);
+            y += 30;
+        }
 
         spriteBatch.DrawString(_font, $"{_fixture.Team2.Name}", new Vector2(_graphics.GraphicsDevice.Viewport.Width / 2 + 400, 150), Color.White, 0f,
             _font.MeasureString($"{_fixture.Team2.Name}") / 2, 1, SpriteEffects.None, 0f);
-        spriteBatch.DrawString(_font, $"{_fixture.Result[1]}", new Vector2(_graphics.GraphicsDevice.Viewport.Width / 2 + 200, 150), Color.White, 0f,
+        spriteBatch.DrawString(_font, $"{_fixture.Result[1]}", new Vector2(_graphics.GraphicsDevice.Viewport.Width / 2 + 250, 150), Color.White, 0f,
             _font.MeasureString($"{_fixture.Result[1]}") / 2, 1, SpriteEffects.None, 0f);
 
-
+        y = 200;
+        foreach (var pos in _fixture.Team1.CurrentFormation.Positions)
+        {
+            spriteBatch.DrawString(_font, $"{_fixture.Team1.CurrentFormation.Players[pos].Name}", new Vector2(_graphics.GraphicsDevice.Viewport.Width / 2 + 400, y), Color.White, 0f,
+                _font.MeasureString($"{_fixture.Team1.CurrentFormation.Players[pos].Name}") / 2, 1, SpriteEffects.None, 0f);
+            y += 30;
+        }
 
 
 

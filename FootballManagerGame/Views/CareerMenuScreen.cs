@@ -96,22 +96,26 @@ public class CareerMenuScreen : Screen
         {
             if (_strings[_selectionIndex] == "Sim Match")
             {
-                if(_gameState.PlayerLeague.AllFixtures.Any(matchday => matchday.Any(f => f.Date == _gameState.CurrentDate))){
+                if (_gameState.PlayerLeague.AllFixtures.Any(matchday => matchday.Any(f => f.Date == _gameState.CurrentDate)))
+                {
                     var todaysFixtures = _gameState.PlayerLeague.AllFixtures.FirstOrDefault(matchday => matchday.Any(f => f.Date == _gameState.CurrentDate));
 
-                        foreach (var fixture in todaysFixtures)
+                    foreach (var fixture in todaysFixtures)
+                    {
+                        if (fixture.Team1 != _gameState.PlayerTeam && fixture.Team2 != _gameState.PlayerTeam)
                         {
-                            if(fixture.Team1 != _gameState.PlayerTeam && fixture.Team2 != _gameState.PlayerTeam){
-                                DataGenerator.SimFixture(fixture);
-                            }
-                             
+                            DataGenerator.SimFixture(fixture);
                         }
+
+                    }
                     _gameState.CurrentDate = _gameState.CurrentDate.AddDays(1);
                     ScreenManager.Instance.AddScreen("LiveSim", new LiveSimScreen(_font, _graphics, _gameDataService, _gameState, _shapes, _textures, _nextGame));
                     ScreenManager.Instance.ChangeScreen("LiveSim");
+                    SetNextGame();
                     
                 }
-                else{
+                else
+                {
                     _gameState.CurrentDate = _gameState.CurrentDate.AddDays(1);
                 }
                 

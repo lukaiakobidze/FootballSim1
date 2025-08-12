@@ -138,10 +138,10 @@ public class DataGenerator
 
             int ovrDiff = fixture.Team1.AvgOvr - fixture.Team2.AvgOvr;
 
-            if (_random.Next(10) < 4)
+            if (_random.Next(10) < 3)
             {
                 int rand = _random.Next(100);
-                if (rand <= 50 + (ovrDiff * 2))
+                if (rand <= 50 + (int)(ovrDiff * 2.5))
                 {
                     fixture.team1ChancesCreated += 1;
                     if (_random.Next(10) < 7)

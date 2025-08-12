@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FootballManagerGame")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ebf73eff1bb22cbdbc621fb9ec299639dd23d4a6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4d0f2677de0e16b9a0055b589a7aa4077decfae9")]
 [assembly: System.Reflection.AssemblyProductAttribute("FootballManagerGame")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FootballManagerGame")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

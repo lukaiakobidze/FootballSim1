@@ -2,7 +2,7 @@
   "version": 3,
   "targets": {
     "net8.0": {
-      "MonoGame.Content.Builder.Task/3.8.3": {
+      "MonoGame.Content.Builder.Task/3.8.4": {
         "type": "package",
         "build": {
           "build/MonoGame.Content.Builder.Task.props": {},
@@ -22,7 +22,7 @@
           }
         }
       },
-      "MonoGame.Framework.DesktopGL/3.8.3": {
+      "MonoGame.Framework.DesktopGL/3.8.4": {
         "type": "package",
         "dependencies": {
           "MonoGame.Library.OpenAL": "1.23.1.10",
@@ -156,18 +156,17 @@
     }
   },
   "libraries": {
-    "MonoGame.Content.Builder.Task/3.8.3": {
-      "sha512": "Q1Pv/MCIcnrV4cjIw9sKdY30Swoj5ju+bCASx4E+vvtfXc3ENnHAVJ6QEFeqlcfA0fJZIX4igMmsf6gQbVHXHw==",
+    "MonoGame.Content.Builder.Task/3.8.4": {
+      "sha512": "Oc/tp6liQ34BkBCrdQO23JDf1Z8r11kKeL9oXSlEfUiRSQYs7C0TYaKIjhfYGjSRaV7JaFIisLDToWpnf7ztKg==",
       "type": "package",
-      "path": "monogame.content.builder.task/3.8.3",
+      "path": "monogame.content.builder.task/3.8.4",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
-        "README.md",
         "build/MonoGame.Content.Builder.Task.props",
         "build/MonoGame.Content.Builder.Task.targets",
-        "monogame.content.builder.task.3.8.3.nupkg.sha512",
+        "monogame.content.builder.task.3.8.4.nupkg.sha512",
         "monogame.content.builder.task.nuspec"
       ]
     },
@@ -186,19 +185,19 @@
         "monogame.extended.nuspec"
       ]
     },
-    "MonoGame.Framework.DesktopGL/3.8.3": {
-      "sha512": "cuyMJrK6fHD13J3gqkSx5yF3agbI9E9sXtynhq6IDmUnvi43PTfbLEH04MStDzJJ3OPGaKDW1zcxqA/G8GwOUw==",
+    "MonoGame.Framework.DesktopGL/3.8.4": {
+      "sha512": "2WR/vPNPcmQ9h4EhMkfpUfMW0Krm6pX0ElkZwSRI1IUecPuzLeXt0i9NRwGxZBUdcNdNxACCmswrxSf4B95Obg==",
       "type": "package",
-      "path": "monogame.framework.desktopgl/3.8.3",
+      "path": "monogame.framework.desktopgl/3.8.4",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
-        "README.md",
+        "README-packages.md",
         "build/MonoGame.Framework.DesktopGL.targets",
         "lib/net8.0/MonoGame.Framework.dll",
         "lib/net8.0/MonoGame.Framework.xml",
-        "monogame.framework.desktopgl.3.8.3.nupkg.sha512",
+        "monogame.framework.desktopgl.3.8.4.nupkg.sha512",
         "monogame.framework.desktopgl.nuspec"
       ]
     },
@@ -407,7 +406,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.200"
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net8.0": {
@@ -446,7 +445,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
